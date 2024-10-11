@@ -2,15 +2,22 @@ from app import app, db
 from flask import jsonify, request
 from models import User
 
-# Ruta para obtener y crear usuarios
-@app.route('/users', methods=['GET', 'POST'])
-def users():
-    if request.method == 'POST':
-        data = request.json
-        new_user = User(name=data['name'])
-        db.session.add(new_user)
-        db.session.commit()
-        return jsonify({'message': 'User created!'}), 201
+# Ruta para crear usuarios
 
+@app.route('/create_users', methods=['POST'])
+def Users():
+    name = request.json.get("name", None)
+    new_user = User(name=name)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'msg':'Usuario registrado correctamente', 'user':new_user.serialize()}),201
+
+@app.route('/users', methods=['GET'])
+def getAllUsers():
     users = User.query.all()
-    return jsonify([{'id': user.id, 'name': user.name} for user in users])
+    users=[user.serialize() for user in users]
+    if users:
+        return jsonify({'user': users}),200
+    return jsonify({'msg':'Ningún usuario encontrado'}),404
+
