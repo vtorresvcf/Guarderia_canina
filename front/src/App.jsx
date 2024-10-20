@@ -1,14 +1,16 @@
-import useStore from "./store/store";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Navbar from "./components/Header";
 
-function App() {
-  const { count, increment, decrement } = useStore();
+const App = () => {
   return (
-    <div>
-      <button onClick={decrement}>-</button>
-      <span>{count}</span>
-      <button onClick={increment}>+</button>
-    </div>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </>
   );
-}
+};
 
 export default App;
