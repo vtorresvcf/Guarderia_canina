@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+header {
+  font-family: "Cedarville Cursive", cursive;
+  font-weight: 500;
+}
+
 .fondo {
   height: 30rem;
   background-image: url(./assets/header_fondo.jpg);
@@ -17,16 +22,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin-left: 1rem;
   padding: 0.4rem 1.4rem;
-  font-family: "Poppins", sans-serif;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 23px;
   text-align: center;
   text-decoration: none;
   color: #fff;
   backface-visibility: hidden;
   border: 0.3rem solid transparent;
   border-radius: 2rem;
+  width: 5rem;
 }
 
 .bn36 {
@@ -40,7 +46,7 @@
 
 .bn47 {
   position: relative;
-  padding: 1rem 2rem 0.5rem 2.5rem;
+  padding: 0.5rem 2rem 0 2rem;
   color: #b9ced3;
   font-weight: 600;
   font-size: 18px;

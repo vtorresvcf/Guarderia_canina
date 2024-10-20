@@ -14,7 +14,7 @@ const Header = () => {
           <div className="flex flex-grow w-full hidden md:flex ">
             <div className="flex mx-auto">
               <ul className="flex items-center gap-5 mx-auto">
-                <li>Home</li>
+                <li className="italic">Home</li>
                 <li>Servicios</li>
                 <li>Reservar</li>
                 <li>Contacto</li>
@@ -27,7 +27,7 @@ const Header = () => {
           </div>
 
           {/* Dropdown*/}
-          <div className=" items-center sm:hidden mx-auto">
+          <div className="relative items-center sm:hidden mx-auto">
             <button
               type="button"
               className="text-white focus:outline-none"
@@ -54,7 +54,7 @@ const Header = () => {
         {/* Dropdown menu */}
 
         <ul
-          className={`text-center md:hidden border rounded-xl p-1 transition-transform duration-500 ease-in-out ${
+          className={`absolute top-20 right-10 text-center md:hidden border rounded-xl p-1 transition-transform duration-500 ease-in-out ${
             openDropdown
               ? "transform translate-y-0 opacity-100"
               : "transform -translate-y-10 opacity-0"
@@ -74,7 +74,7 @@ const Header = () => {
                   Login
                 </button>
                 <button
-                  className="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-white hover:bg-slate-100 hover:text-black focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  className="  rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-white hover:bg-slate-100 hover:text-black focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
                 >
                   Sign up
