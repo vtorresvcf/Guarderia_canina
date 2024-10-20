@@ -1,7 +1,14 @@
-import React from "react";
+import useStore from "../store/store";
 
 const Home = () => {
-  return <div className="w-50 bg-slate-500"> Home</div>;
+  const { count, increment, decrement } = useStore();
+  return (
+    <div>
+      <button onClick={decrement}>-</button>
+      <span>{count}</span>
+      <button onClick={increment}>+</button>
+    </div>
+  );
 };
 
 export default Home;
