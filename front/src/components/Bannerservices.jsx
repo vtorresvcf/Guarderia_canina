@@ -3,15 +3,14 @@ import dataServicios from "../utils/data.js";
 
 const BannerServices = () => {
   return (
-    <div className="container-full my-10">
-      <h1 className="text-center text-green-700 font-bold font-sans text-2xl">
+    <div className="container mx-auto my-10 px-4">
+      <h1 className="text-center text-green-700 font-bold text-xl font-serif md:text-3xl lg:text-4xl my-10 ">
         SERVICIOS
       </h1>
-      <div className="bg-cyan-100 h-48 list-none flex gap-1 justify-between ">
+      <div className="mx-auto h-auto list-none grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {dataServicios?.map((servicio) => (
           <Service key={servicio.id} servicio={servicio} />
         ))}
-        aqui componentes servicios
       </div>
     </div>
   );
