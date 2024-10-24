@@ -1,14 +1,11 @@
-import useStore from "../store/store";
+import AboutUs from "../components/AboutUs";
 import Services from "../components/Bannerservices";
 
 const Home = () => {
-  const { count, increment, decrement } = useStore();
   return (
     <div>
+      <AboutUs />
       <Services />
-      <button onClick={decrement}>-</button>
-      <span>{count}</span>
-      <button onClick={increment}>+</button>
     </div>
   );
 };
