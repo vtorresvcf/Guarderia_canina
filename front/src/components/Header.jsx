@@ -6,12 +6,12 @@ const Header = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
   return (
     <header className="fondo">
-      <nav className="flex items-center flex-grow py-6 justify-between text-white">
+      <nav className="flex items-center  py-6 justify-between text-white  mx-auto w-full  ">
         <div className="container mx-auto flex px-2">
           <div className="">
             <Logo />
           </div>
-          <div className=" flex-grow w-full hidden md:flex ">
+          <div className=" w-full hidden md:flex ">
             <div className="flex mx-auto">
               <ul className="flex items-center gap-5 mx-auto text-xl md:text-xl lg:text-3xl">
                 <li>Home</li>
