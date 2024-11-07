@@ -3,13 +3,13 @@ import "../index.css";
 
 const AboutUs = () => {
   return (
-    <div className="w-[90%]  py-12 bg-orange-200 grid grid-cols-1 md:grid-cols-2 items-center mx-auto">
+    <div className="w-[90%]  py-12 grid grid-cols-1 md:grid-cols-2 items-center mx-auto">
       <img
         className="object-cover w-full mx-auto"
         src={Friends}
         alt="Imagen de amigos jugando con perros"
       />
-      <div className="bg-[#91B09A] text-center p-6 rounded-lg shadow-md">
+      <div className="bg-[#91B09A] text-center p-6 shadow-md">
         <h1 className="text-green-900 font-mono text-3xl mb-4">
           Sobre nosotros
         </h1>

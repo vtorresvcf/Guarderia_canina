@@ -11,11 +11,7 @@
 html,
 body {
   min-height: 100vh;
-  background-color: rgb(247, 231, 210);
-}
-
-footer {
-  margin-top: 8rem;
+  background-color: rgb(245, 236, 224);
 }
 
 header {
@@ -24,7 +20,7 @@ header {
 }
 
 .fondo {
-  height: 30rem;
+  height: 20rem;
   background-image: url(./assets/header_fondo.jpg);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 88%);
   background-repeat: no-repeat;
@@ -93,4 +89,13 @@ header {
 .bn47:hover:before {
   top: 0;
   left: 0;
+}
+
+.icon {
+  color: rgb(64, 105, 64);
+
+  font-size: 5rem;
+  border-radius: 5rem;
+  padding: 5px;
+  border: 1px solid rgb(64, 105, 64);
 }
