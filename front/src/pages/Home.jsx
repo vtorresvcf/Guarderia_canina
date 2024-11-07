@@ -2,6 +2,7 @@ import AboutUs from "../components/AboutUs";
 import Bannerphrase from "../components/Bannerphrase";
 import Services from "../components/Bannerservices";
 import Location from "../components/Location";
+import BannerReserve from "../components/BannerReserve";
 
 const Home = () => {
   return (
@@ -10,6 +11,7 @@ const Home = () => {
       <Bannerphrase />
       <Services />
       <Location />
+      <BannerReserve />
     </div>
   );
 };

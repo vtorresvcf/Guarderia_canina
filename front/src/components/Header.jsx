@@ -1,6 +1,7 @@
 import Logo from "./Logo";
 import "../index.css";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -8,16 +9,29 @@ const Header = () => {
     <header className="fondo">
       <nav className="flex items-center  py-6 justify-between text-white  mx-auto w-full  ">
         <div className="container mx-auto flex px-2">
-          <div className="">
+          <div>
             <Logo />
           </div>
           <div className=" w-full hidden md:flex ">
             <div className="flex mx-auto">
-              <ul className="flex items-center gap-5 mx-auto text-xl md:text-xl lg:text-3xl">
-                <li>Home</li>
-                <li>Servicios</li>
-                <li>Reservar</li>
-                <li>Contacto</li>
+              <ul className="flex items-center gap-5 mx-auto text-xl lg:text-3xl ">
+                <Link to="/">
+                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                    Home
+                  </li>
+                </Link>
+                <Link to="/services">
+                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                    Servicios
+                  </li>
+                </Link>
+
+                <li className="hover:text-4xl hover:underline hover:decoration-4">
+                  Reservar
+                </li>
+                <li className="hover:text-4xl hover:underline hover:decoration-4">
+                  Contacto
+                </li>
               </ul>
             </div>
             <div className="flex  gap-3 justify-center">
