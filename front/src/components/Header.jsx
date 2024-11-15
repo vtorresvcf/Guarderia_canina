@@ -25,10 +25,11 @@ const Header = () => {
                     Servicios
                   </li>
                 </Link>
-
-                <li className="hover:text-4xl hover:underline hover:decoration-4">
-                  Reservar
-                </li>
+                <Link to="/reservation">
+                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                    Reservar
+                  </li>
+                </Link>
                 <li className="hover:text-4xl hover:underline hover:decoration-4">
                   Contacto
                 </li>

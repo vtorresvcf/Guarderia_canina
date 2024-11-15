@@ -6,7 +6,7 @@ import BannerReserve from "../components/BannerReserve";
 
 const Home = () => {
   return (
-    <div>
+    <div className="min-h-screen relative">
       <AboutUs />
       <Bannerphrase />
       <Services />

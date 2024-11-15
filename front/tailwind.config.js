@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         pacifico: ['"Pacifico"'],
+        cedarville: ['"Cedarville Cursive"'],
       },
       colors: {
         verdeOscuro: "#406940",
