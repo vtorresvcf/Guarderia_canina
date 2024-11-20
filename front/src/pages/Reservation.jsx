@@ -9,7 +9,7 @@ const Reservation = () => {
         <h1 className="text-center text-6xl font-cedarville text-green-700 xl:text-7xl ">
           Reserva online
         </h1>
-        <div className="h-96">
+        <div className="h-60 bg-slate-200">
           <SelectDates />
         </div>
       </div>
