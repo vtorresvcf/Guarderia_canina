@@ -4,7 +4,8 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Formik, Field, Form } from "formik";
 import { format } from "date-fns";
-
+import { IoCalendarNumber } from "react-icons/io5";
+import { GiDogHouse } from "react-icons/gi";
 const SelectDates = () => {
   const handleSubmit = (values) => {
     const formattedStartDate = format(values.dateStart, "dd/MMM/yy");
@@ -19,12 +20,12 @@ const SelectDates = () => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   return (
-    <div>
+    <div className="text-verdeOscuro font-pacifico">
       <Formik
         initialValues={{
           dateStart: null,
           endDate: null,
-          numberPlaces: 1,
+          numberPlaces: "",
         }}
         validate={(values) => {
           const errors = {};
@@ -48,24 +49,73 @@ const SelectDates = () => {
         }}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, errors, touched, values }) => (
-          <Form className="flex justify-center gap-24 items-center">
-            <div>
-              <label>Seleccionar fechas:</label>
-              <input
-                type="text"
-                onClick={() => setOpenCalendar(true)}
-                className="shadow appearance-none border rounded w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                readOnly
-                value={
-                  values.dateStart === null || values.endDate === null
-                    ? "Fecha" // Mostrar "Fecha" si no hay selección
-                    : `${format(values.dateStart, "dd/MMM/yy")} - ${format(
-                        values.endDate,
-                        "dd/MMM/yy"
-                      )}`
-                }
-              />
+        {({ setFieldValue, errors, touched, values, resetForm }) => (
+          <Form className="flex flex-col justify-center gap-4 items-center w-full">
+            {/* Primera fila: campos de entrada */}
+            <div className="flex items-center border-b border-teal-500 py-2 text-3xl gap-4">
+              <div className="flex items-center justify-center gap-1">
+                <label htmlFor="calendar">
+                  <IoCalendarNumber />
+                </label>
+                <Field
+                  className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  type="text"
+                  id="calendar"
+                  name="calendar"
+                  placeholder="Seleccione la fecha"
+                  onClick={() => setOpenCalendar(true)}
+                  readOnly
+                  value={
+                    values.dateStart === null || values.endDate === null
+                      ? ""
+                      : values.dateStart.getTime() === values.endDate.getTime()
+                      ? format(values.dateStart, "dd/MMM/yy")
+                      : `${format(values.dateStart, "dd/MMM/yy")} - ${format(
+                          values.endDate,
+                          "dd/MMM/yy"
+                        )}`
+                  }
+                />
+              </div>
+
+              <div className="flex items-center justify-center gap-1">
+                <label htmlFor="numberPlaces">
+                  <GiDogHouse />
+                </label>
+                <Field
+                  type="text"
+                  id="numberPlaces"
+                  name="numberPlaces"
+                  className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  min="1"
+                  max="10"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="Nº plazas"
+                />
+              </div>
+              <div>
+                <button
+                  className="flex-shrink-0 bg-green-700 hover:bg-green-800 border-green-700 hover:border-green-900 border-4 text-white py-1 px-2 rounded"
+                  type="submit"
+                >
+                  Reservar
+                </button>
+                <button
+                  className="flex-shrink-0 border-transparent border-4 text-green-700 hover:text-green-900 py-1 px-2 rounded"
+                  type="button"
+                  onClick={() => {
+                    resetForm();
+                    setOpenCalendar(false);
+                  }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+
+            {/* Segunda fila: calendario y errores */}
+            <div className="flex flex-col items-center justify-center gap-4 mt-4 w-full">
               {openCalendar && (
                 <DateRange
                   ranges={[
@@ -80,7 +130,7 @@ const SelectDates = () => {
                     setFieldValue("dateStart", startDate);
                     setFieldValue("endDate", endDate);
                     if (startDate && endDate && startDate !== endDate) {
-                      setOpenCalendar(false); // Cerrar calendario
+                      setOpenCalendar(false);
                     }
                   }}
                   rangeColors={["#15803D"]}
@@ -89,29 +139,18 @@ const SelectDates = () => {
                   editableDateInputs={false}
                 />
               )}
+
+              {/* Errores */}
               {touched.dateStart && errors.dateStart && (
                 <div style={{ color: "red" }}>{errors.dateStart}</div>
               )}
               {touched.endDate && errors.endDate && (
                 <div style={{ color: "red" }}>{errors.endDate}</div>
               )}
-            </div>
-
-            <div>
-              <label htmlFor="numberPlaces">Número de plazas:</label>
-              <Field
-                type="number"
-                id="numberPlaces"
-                name="numberPlaces"
-                min="1"
-                max="10"
-              />
               {touched.numberPlaces && errors.numberPlaces && (
                 <div style={{ color: "red" }}>{errors.numberPlaces}</div>
               )}
             </div>
-
-            <button type="submit">Realizar Reserva</button>
           </Form>
         )}
       </Formik>
