@@ -10,6 +10,9 @@ export default {
       colors: {
         verdeOscuro: "#406940",
       },
+      backgroundColor: {
+        verdeOscuro: "#406940",
+      },
     },
   },
   plugins: [],
