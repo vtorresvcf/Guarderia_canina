@@ -10,7 +10,7 @@ const Header = () => {
       <nav className="flex items-center  py-6 justify-between text-white  mx-auto w-full  ">
         <div className="container mx-auto flex px-2">
           <div>
-            <Logo />
+            <Logo color="white" />
           </div>
           <div className=" w-full hidden md:flex ">
             <div className="flex mx-auto">
@@ -30,9 +30,11 @@ const Header = () => {
                     Reservar
                   </li>
                 </Link>
-                <li className="hover:text-4xl hover:underline hover:decoration-4">
-                  Contacto
-                </li>
+                <Link to="/contact">
+                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                    Contacto
+                  </li>
+                </Link>
               </ul>
             </div>
             <div className="flex  gap-3 justify-center">

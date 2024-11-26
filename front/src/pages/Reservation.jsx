@@ -4,12 +4,12 @@ import SelectDates from "../components/SelectDates";
 
 const Reservation = () => {
   return (
-    <div className="min-h-96 py-10">
+    <div className="min-h-96 py-2">
       <div>
         <h1 className="text-center text-6xl font-cedarville text-green-700 xl:text-7xl ">
           Reserva online
         </h1>
-        <div className="min-h-24 bg-slate-200">
+        <div className="min-h-52">
           <SelectDates />
         </div>
       </div>
