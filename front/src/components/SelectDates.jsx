@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useReservationStore from "../store/store";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -7,25 +8,28 @@ import { format } from "date-fns";
 import { IoCalendarNumber } from "react-icons/io5";
 import { GiDogHouse } from "react-icons/gi";
 const SelectDates = () => {
+  const { dateStart, endDate, numberPlaces, reset, setReserva } =
+    useReservationStore();
   const handleSubmit = (values) => {
     const formattedStartDate = format(values.dateStart, "dd/MMM/yy");
     const formattedEndDate = format(values.endDate, "dd/MMM/yy");
-    console.log({
+    setReserva({
       dateStart: formattedStartDate,
       endDate: formattedEndDate,
       numberPlaces: values.numberPlaces,
     });
+    reset;
   };
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
   return (
-    <div className="text-verdeOscuro font-pacifico">
+    <div className="text-verdeOscuro font-pacifico my-20">
       <Formik
         initialValues={{
-          dateStart: null,
-          endDate: null,
-          numberPlaces: "",
+          dateStart,
+          endDate,
+          numberPlaces,
         }}
         validate={(values) => {
           const errors = {};
@@ -34,7 +38,7 @@ const SelectDates = () => {
           }
           if (!values.endDate) {
             errors.endDate = "La fecha de salida es obligatoria.";
-          } else if (new Date(values.endDate) <= new Date(values.dateStart)) {
+          } else if (new Date(values.endDate) < new Date(values.dateStart)) {
             errors.endDate =
               "La fecha de salida debe ser posterior a la de entrada.";
           }
@@ -50,19 +54,18 @@ const SelectDates = () => {
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, errors, touched, values, resetForm }) => (
-          <Form className="flex flex-col justify-center gap-4 items-center w-full">
-            {/* Primera fila: campos de entrada */}
-            <div className="flex items-center border-b border-teal-500 py-2 text-3xl gap-4">
-              <div className="flex items-center justify-center gap-1">
+          <Form className="flex flex-col justify-center gap-4 items-center w-full mx-12">
+            <div className="flex items-center border-b border-teal-500 py-2 text-2xl md:text-3xl gap-4 flex-col md:flex-row justify-center">
+              <div className="flex items-center justify-center gap-1  w-full md:w-auto">
                 <label htmlFor="calendar">
                   <IoCalendarNumber />
                 </label>
                 <Field
-                  className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  className="appearance-none bg-transparent border-none w-[120px] text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
                   type="text"
                   id="calendar"
                   name="calendar"
-                  placeholder="Seleccione la fecha"
+                  placeholder="Fecha"
                   onClick={() => setOpenCalendar(true)}
                   readOnly
                   value={
@@ -86,7 +89,7 @@ const SelectDates = () => {
                   type="text"
                   id="numberPlaces"
                   name="numberPlaces"
-                  className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  className="appearance-none bg-transparent border-none w-[140px]  text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
                   min="1"
                   max="10"
                   inputMode="numeric"
@@ -106,6 +109,7 @@ const SelectDates = () => {
                   type="button"
                   onClick={() => {
                     resetForm();
+                    reset();
                     setOpenCalendar(false);
                   }}
                 >
@@ -114,7 +118,6 @@ const SelectDates = () => {
               </div>
             </div>
 
-            {/* Segunda fila: calendario y errores */}
             <div className="flex flex-col items-center justify-center gap-4 mt-4 w-full">
               {openCalendar && (
                 <DateRange
@@ -140,7 +143,6 @@ const SelectDates = () => {
                 />
               )}
 
-              {/* Errores */}
               {touched.dateStart && errors.dateStart && (
                 <div style={{ color: "red" }}>{errors.dateStart}</div>
               )}
