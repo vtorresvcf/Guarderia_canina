@@ -38,7 +38,9 @@ const Header = () => {
               </ul>
             </div>
             <div className="flex  gap-3 justify-center">
-              <button className="bn3637 bn36">Login</button>
+              <Link to="login">
+                <button className="bn3637 bn36">Login</button>
+              </Link>
               <button className="bn47">Sign up</button>
             </div>
           </div>
