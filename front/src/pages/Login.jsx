@@ -5,8 +5,8 @@ import Logo from "../components/Logo";
 const Login = () => {
   return (
     <div className="min-h-[50rem] relative">
-      <div className="w-[25rem] bg-white h-[50rem] rounded-3xl mx-auto my-12 border-2 border-green-500">
-        <div className="bg-white h-1/4 justify-center flex items-center">
+      <div className="w-[25rem] bg-white h-[45rem]  mx-auto my-12 border-2 border-green-500 rounded-lg ">
+        <div className="bg-white h-1/5 justify-center  flex items-center rounded-lg ">
           <Logo />
         </div>
         <div className=" h-2/4">
