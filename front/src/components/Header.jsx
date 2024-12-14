@@ -41,7 +41,9 @@ const Header = () => {
               <Link to="login">
                 <button className="bn3637 bn36">Login</button>
               </Link>
-              <button className="bn47">Sign up</button>
+              <Link to="register">
+                <button className="bn47">Sign up</button>
+              </Link>
             </div>
           </div>
 

@@ -4,7 +4,8 @@ import * as Yup from "yup";
 const FormLogin = () => {
   const handleSubmit = async (values, { resetForm }) => {
     console.log(values);
-    resetForm();
+    // TODO AQUI PONER ACCION PARA ENVIAR DATOS
+    //resetForm();
   };
   return (
     <div className=" h-full">
@@ -51,7 +52,7 @@ const FormLogin = () => {
             <div className="flex flex-col mx-10 py-5">
               <button
                 type="submit"
-                className="w-full bg-green-500/20 rounded-xl py-2 shadow-2xl hover:bg-green-700/20 transition-all "
+                className="w-full bg-green-700 rounded-xl py-2 shadow-2xl hover:bg-green-600 transition-all text-white "
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Enviando..." : "Enviar"}
@@ -59,8 +60,10 @@ const FormLogin = () => {
             </div>
             <div className="text-center">
               <p>
-                Has olvidado la contraseña?{" "}
-                <span className="underline cursor-pointer">Pulsa aquí</span>
+                Has olvidado la contraseña?
+                <span className="pl-2 underline cursor-pointer opacity-60 hover:font-bold">
+                  Pulsa aquí
+                </span>
               </p>
             </div>
           </Form>
