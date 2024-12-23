@@ -1,8 +1,20 @@
+import { useEffect } from "react";
 import Perro from "../assets/dog-register.jpg";
 import FormRegister from "../components/FormRegister";
 import Logo from "../components/Logo";
+import useReservationStore from "../store/store";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const { message, register } = useReservationStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (register) {
+      setTimeout(() => {
+        navigate("/");
+      }, 4000);
+    }
+  }, [register, navigate]);
   return (
     <div className="min-h-[60rem] flex items-center justify-center ">
       <div className="flex w-[90%] max-w-5xl  rounded-lg shadow-lg overflow-hidden divide-x divide-slate-200">
@@ -12,6 +24,17 @@ const Register = () => {
           </div>
 
           <div className="flex-grow">
+            {message && (
+              <div role="alert">
+                <div
+                  className={` ${
+                    register === false ? "bg-red-600" : "bg-green-700"
+                  }  text-center rounded text-white font-bold rounded-t px-4 py-2 my-2`}
+                >
+                  {message}
+                </div>
+              </div>
+            )}
             <FormRegister />
           </div>
         </div>

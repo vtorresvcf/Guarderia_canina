@@ -11,7 +11,7 @@
 html,
 body {
   min-height: 100vh;
-  background-color: rgb(245, 236, 224);
+  background-color: rgb(247, 239, 230);
 }
 
 header {
@@ -44,7 +44,6 @@ header {
   backface-visibility: hidden;
   border: 0.3rem solid transparent;
   border-radius: 2rem;
-  width: 5rem;
 }
 
 .bn36 {

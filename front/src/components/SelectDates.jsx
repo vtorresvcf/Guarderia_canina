@@ -24,7 +24,7 @@ const SelectDates = () => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   return (
-    <div className="text-verdeOscuro font-pacifico my-20">
+    <div className="text-verdeOscuro font-pacifico my-20 flex justify-center">
       <Formik
         initialValues={{
           dateStart,
@@ -54,19 +54,23 @@ const SelectDates = () => {
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, errors, touched, values, resetForm }) => (
-          <Form className="flex flex-col justify-center gap-4 items-center w-full mx-12">
-            <div className="flex items-center border-b border-teal-500 py-2 text-2xl md:text-3xl gap-4 flex-col md:flex-row justify-center">
-              <div className="flex items-center justify-center gap-1  w-full md:w-auto">
-                <label htmlFor="calendar">
+          <Form className="flex flex-col justify-center items-center w-full mx-12 ">
+            <div className="flex items-center border-b border-teal-500 py-2 text-2xl md:text-3xl gap-4 flex-col md:flex-row justify-center ">
+              <div className="flex items-center justify-center gap-1  ">
+                <label htmlFor="calendar ">
                   <IoCalendarNumber />
                 </label>
                 <Field
-                  className="appearance-none bg-transparent border-none w-[120px] text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  className={`text-lg ${
+                    values.dateStart === null || values.endDate === null
+                      ? "text-gray-700 w-[140px]"
+                      : "text-verdeOscuro "
+                  }  appearance-none bg-transparent  justify-center  border-none  md:mr-3 py-1 px-2 leading-tight focus:outline-none`}
                   type="text"
                   id="calendar"
                   name="calendar"
                   placeholder="Fecha"
-                  onClick={() => setOpenCalendar(true)}
+                  onClick={() => setOpenCalendar(!openCalendar)}
                   readOnly
                   value={
                     values.dateStart === null || values.endDate === null

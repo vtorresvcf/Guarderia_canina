@@ -1,11 +1,12 @@
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
+import useReservationStore from "../store/store";
 
 const FormLogin = () => {
+  const { loginUser } = useReservationStore();
   const handleSubmit = async (values, { resetForm }) => {
-    console.log(values);
-    // TODO AQUI PONER ACCION PARA ENVIAR DATOS
-    //resetForm();
+    await loginUser(values);
+    resetForm();
   };
   return (
     <div className=" h-full">

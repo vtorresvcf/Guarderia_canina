@@ -1,11 +1,12 @@
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
+import useReservationStore from "../store/store";
 
 const FormRegister = () => {
+  const { registerUser } = useReservationStore();
   const handleSubmit = async (values, { resetForm }) => {
-    console.log(values);
-    // TODO AQUI PONER ACCION PARA ENVIAR DATOS Y PROBAR CON EL BACK CON AXIOS PARA EL REGISTRO
-    //resetForm();
+    await registerUser(values);
+    resetForm();
   };
   return (
     <div className=" h-full">
@@ -29,11 +30,11 @@ const FormRegister = () => {
             .required("El nombre es obligatorio")
             .min(4, "Debe tener al menos 4 caracteres"),
           username: Yup.string()
-            .required("El nombre es obligatorio")
-            .min(8, "Debe tener al menos 8 caracteres"),
-          phone: Yup.number()
+            .required("El apellido es obligatorio")
+            .min(4, "Debe tener al menos 8 caracteres"),
+          phone: Yup.string()
             .required("El teléfono es requerido")
-            .min(9, "Debe tener al menos 9 caracteres")
+            .matches(/^\d{9,}$/, "Debe tener al menos 9 dígitos")
             .typeError("Debe ser un número válido"),
         })}
         onSubmit={handleSubmit}
