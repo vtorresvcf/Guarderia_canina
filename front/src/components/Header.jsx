@@ -2,9 +2,12 @@ import Logo from "./Logo";
 import "../index.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useReservationStore from "../store/store";
 
 const Header = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
+  const { logout, user } = useReservationStore();
+
   return (
     <header className="fondo">
       <nav className="flex items-center  py-6 justify-between text-white  mx-auto w-full  ">
@@ -38,12 +41,26 @@ const Header = () => {
               </ul>
             </div>
             <div className="flex  gap-3 justify-center">
-              <Link to="login">
-                <button className="bn3637 bn36">Login</button>
-              </Link>
-              <Link to="register">
-                <button className="bn47">Sign up</button>
-              </Link>
+              {user ? (
+                <>
+                  <button className="bn3637 bn36">{user.name}</button>
+                  <button
+                    onClick={logout}
+                    className="text-2xl  border-x-white underline hover:font-bold"
+                  >
+                    Cerrar sesión
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="login">
+                    <button className="bn3637 bn36">Login</button>
+                  </Link>
+                  <Link to="register">
+                    <button className="bn47">Sign up</button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
