@@ -84,12 +84,41 @@ const useReservationStore = create(
         alert("Error al logearse");
       }
     },
-    setReserva: (start, end, number) =>
-      set({
-        dateStart: start,
-        endDate: end,
-        numberPlaces: number,
-      }),
+    setReserva: async (values) => {
+      try {
+        set({ isLoading: true, error: null });
+        const response = await axios.post(
+          "http://127.0.0.1:5000/add_reservation",
+          values
+        );
+        if (response?.data?.reservation === false) {
+          set({
+            message: response.data.msg,
+            reservation: response.data.reservation,
+          });
+          toast.error(response.data.msg);
+        } else {
+          set({
+            service: response.data.service,
+            message: response.data.msg,
+            reservation: response.data.true,
+          });
+          toast.success(response.data.msg);
+        }
+        setTimeout(() => {
+          set({ message: null });
+        }, 5000);
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.msg || error.message || "Error desconocido";
+        set({
+          error: errorMessage,
+          isLoading: false,
+        });
+        toast.success(errorMessage);
+      }
+    },
+
     setDates: (start, end) =>
       set({
         dateStart: start,
