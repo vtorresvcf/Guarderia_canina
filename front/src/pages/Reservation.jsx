@@ -13,9 +13,9 @@ const Reservation = () => {
           <SelectDates />
         </div>
       </div>
-      <div className="flex flex-row flex-wrap md:flex-nowrap justify-center text-center gap-4 mx-24 pb-40 ">
-        <div className="flex-1 border-double border-4 border-verdeOscuro p-8 ">
-          <h2 className="font-cedarville text-green-700 text-4xl mb-5 xl:text-5xl 2xl:text-6xl">
+      <div className="flex flex-row flex-wrap md:flex-nowrap justify-center text-center gap-4 mx-24 pb-40 text-green-700 ">
+        <div className="flex-1 border-double border-4 border-verdeOscuro p-8  ">
+          <h2 className="font-cedarville text-4xl mb-5 xl:text-5xl 2xl:text-6xl">
             Reservas por teléfono
           </h2>
           <p className="mb-4 lg:text-xl">
@@ -29,7 +29,7 @@ const Reservation = () => {
           </div>
         </div>
         <div className="flex-1 border-double border-4 border-verdeOscuro p-8">
-          <h2 className="font-cedarville text-green-700 text-4xl mb-5 xl:text-5xl 2xl:text-6xl">
+          <h2 className="font-cedarville text-4xl mb-5 xl:text-5xl 2xl:text-6xl">
             Reservas por correo
           </h2>
 
