@@ -22,18 +22,17 @@ const SelectDates = () => {
       setTimeout(() => {
         navigate("/register");
       }, 3000);
-      console.log(values);
     } else {
       const formattedDateStart = format(values.dateStart, "dd-MM-yyyy");
       const formattedEndDate = format(values.endDate, "dd-MM-yyyy");
-
+      console.log(values);
       const formattedValues = {
         ...values,
         dateStart: formattedDateStart,
         endDate: formattedEndDate,
       };
+      console.log("Formatted values:", formattedValues);
       setReserva(formattedValues);
-      console.log(formattedValues);
     }
   };
 
@@ -60,7 +59,6 @@ const SelectDates = () => {
           dateStart: dateStart || null,
           endDate: endDate || null,
           places: places || 1,
-          id_user: user?.id || null,
           id_services: 6,
         }}
         validate={(values) => {
