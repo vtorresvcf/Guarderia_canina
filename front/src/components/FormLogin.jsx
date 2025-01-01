@@ -59,7 +59,7 @@ const FormLogin = () => {
                 {isSubmitting ? "Enviando..." : "Enviar"}
               </button>
             </div>
-            <div className="text-center">
+            <div className="text-center bg-white">
               <p>
                 Has olvidado la contraseña?
                 <span className="pl-2 underline cursor-pointer opacity-60 hover:font-bold">

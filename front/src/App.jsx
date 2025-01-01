@@ -7,6 +7,7 @@ import Reservation from "./pages/Reservation";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ConsultaReservas from "./pages/ConsultaReservas";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/consultaReservas" element={<ConsultaReservas />} />
       </Routes>
       <Footer />
     </>

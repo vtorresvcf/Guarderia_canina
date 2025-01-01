@@ -28,7 +28,7 @@ const Login = () => {
         </div>
         <div className=" h-1/4 ">
           <img
-            className="w-full h-[50%] object-cover overflow-visible"
+            className="w-full h-[45%] object-cover overflow-visible"
             src={Perro}
             alt="imagen-perro"
           ></img>

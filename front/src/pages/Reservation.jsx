@@ -1,8 +1,21 @@
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
 import SelectDates from "../components/SelectDates";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import useReservationStore from "../store/store";
 
 const Reservation = () => {
+  const { reservation } = useReservationStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (reservation) {
+      setTimeout(() => {
+        navigate("/consultaReservas");
+      }, 3000);
+    }
+  }, [reservation, navigate]);
   return (
     <div className="min-h-96 py-2">
       <div>
