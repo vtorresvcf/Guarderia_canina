@@ -38,6 +38,13 @@ const Header = () => {
                     Contacto
                   </li>
                 </Link>
+                {user && (
+                  <Link to="/consultaReservas">
+                    <li className="hover:text-4xl hover:underline hover:decoration-4">
+                      Reservas
+                    </li>
+                  </Link>
+                )}
               </ul>
             </div>
             <div className="flex  gap-3 justify-center">

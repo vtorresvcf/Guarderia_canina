@@ -5,11 +5,10 @@ import { toast } from "sonner";
 
 const useReservationStore = create(
   devtools((set) => ({
-    token: JSON.parse(localStorage.getItem("user")) || null,
+    token: JSON.parse(localStorage.getItem("authToken")) || null,
     dateStart: null,
     endDate: null,
     isAuthenticated: false,
-    numberPlaces: "",
     user: JSON.parse(localStorage.getItem("user")) || null,
     message: null,
     reservations: null,
@@ -144,7 +143,7 @@ const useReservationStore = create(
         }
 
         setTimeout(() => {
-          set({ message: null });
+          set({ message: null, reservation: false });
         }, 5000);
       } catch (error) {
         console.error("Error en la solicitud:", error.response || error);
@@ -212,9 +211,6 @@ const useReservationStore = create(
     deleteReserva: async (id) => {
       const token = localStorage.getItem("authToken");
       const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      console.log("id de reserva:" + id);
-      console.log("Token:" + cleanToken);
-      console.log(`http://127.0.0.1:5000/delete_reservation/${id}`);
       // Verifica si el token está presente
       if (!token) {
         set({
@@ -234,14 +230,12 @@ const useReservationStore = create(
             },
           }
         );
-        {
-          /*TODO verificar el setstate que renderice al eliminar el stado */
-        }
+
         if (response.data.success) {
           const { reservations } = useReservationStore.getState();
 
           const updatedReservations = reservations.filter(
-            (reserva) => reserva.id !== id
+            (reserva) => reserva.id_reserva !== id
           );
           useReservationStore.setState({ reservations: updatedReservations });
           toast.success(response.data.msg);
@@ -261,11 +255,81 @@ const useReservationStore = create(
         toast.error(errorMessage);
       }
     },
+    updatedReserva: async (values) => {
+      const token = localStorage.getItem("authToken");
+      const cleanToken = token.replace(/^"(.*)"$/, "$1");
+      // Verifica si el token está presente
+      if (!token) {
+        set({
+          error: "No hay un token de autenticación. Por favor, inicia sesión.",
+          isLoading: false,
+        });
+        toast.error("No hay un token de autenticación.");
+        return;
+      }
+
+      try {
+        set({ isLoading: true, error: null });
+
+        const response = await axios.put(
+          `http://127.0.0.1:5000/update_reservation/${values.id_reserva}`,
+          values,
+          {
+            headers: {
+              Authorization: `Bearer ${cleanToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.data.updated) {
+          console.log(response.data.reservation);
+          const { reservations } = useReservationStore.getState();
+
+          const filterReserva = reservations.filter(
+            (reserva) => reserva.id_reserva !== values.id_reserva
+          );
+          const updatedReservas = [
+            ...filterReserva,
+            response.data.reservation || response.data.reservation_to_update,
+          ];
+          console.log(updatedReservas);
+
+          set({
+            message: response.data.msg,
+            error: null,
+            isLoading: false,
+            reservations: updatedReservas,
+          });
+
+          toast.success(response.data.msg);
+        } else {
+          set({
+            message: response.data.msg,
+            error: "Error",
+          });
+          console.error("Error en la reserva:", response.data.msg);
+          toast.error(response.data.msg);
+        }
+
+        setTimeout(() => {
+          set({ message: null });
+        }, 5000);
+      } catch (error) {
+        console.error("Error en la solicitud:", error.response || error);
+        const errorMessage =
+          error.response?.data?.msg || error.message || "Error desconocido";
+        set({
+          error: errorMessage,
+          isLoading: false,
+        });
+        toast.error(errorMessage);
+      }
+    },
+
     reset: () =>
       set({
-        dateStart: null,
-        endDate: null,
-        numberPlaces: "",
+        reservation: false,
       }),
   }))
 );
