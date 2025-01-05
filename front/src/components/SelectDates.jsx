@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useReservationStore from "../store/store";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -25,14 +25,15 @@ const SelectDates = () => {
     } else {
       const formattedDateStart = format(values.dateStart, "dd-MM-yyyy");
       const formattedEndDate = format(values.endDate, "dd-MM-yyyy");
-      console.log(values);
       const formattedValues = {
         ...values,
         dateStart: formattedDateStart,
         endDate: formattedEndDate,
       };
-      console.log("Formatted values:", formattedValues);
       setReserva(formattedValues);
+      setTimeout(() => {
+        navigate("/consultaReservas");
+      }, 3000);
     }
   };
 

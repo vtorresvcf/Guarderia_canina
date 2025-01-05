@@ -6,37 +6,43 @@ import { Toaster } from "sonner";
 
 const ConsultaReservas = () => {
   const { getReservas, reservations } = useReservationStore();
-  const [filterType, setFilterType] = useState("all"); // "all", "week", "month"
+  const [filterType, setFilterType] = useState("all"); // "all", "week", "month", "year"
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // January is 0, so +1 for month index
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // current year
 
   useEffect(() => {
     getReservas();
   }, [getReservas]);
 
-  const reservasOrdenadas = reservations?.slice().sort((a, b) => {
-    const dateStart = new Date(a.dateStart);
-    const endDate = new Date(b.endDate);
-    return dateStart - endDate;
-  });
+  // Filtrar las reservas según el tipo de filtro
+  const filteredReservations = reservations
+    ?.filter((reserva) => {
+      const [day, month, year] = reserva.dateStart.split("-");
+      const startDate = new Date(`${year}-${month}-${day}`);
 
-  // Filtrar las reservas según el filtro seleccionado
-  const filteredReservations = reservasOrdenadas?.filter((reserva) => {
-    const now = new Date();
-    const startDate = new Date(reserva.dateStart);
+      // Filtrar por año
+      if (filterType === "year") {
+        return startDate.getFullYear() === selectedYear;
+      }
 
-    if (filterType === "week") {
-      const oneWeekFromNow = new Date();
-      oneWeekFromNow.setDate(now.getDate() + 7); // Fecha dentro de una semana
-      return startDate >= now && startDate <= oneWeekFromNow;
-    }
+      // Filtrar por mes
+      if (filterType === "month") {
+        return startDate.getMonth() + 1 === selectedMonth; // Los meses son 0-indexed, por eso sumamos 1
+      }
 
-    if (filterType === "month") {
-      const oneMonthFromNow = new Date();
-      oneMonthFromNow.setMonth(now.getMonth() + 1); // Fecha dentro de un mes
-      return startDate >= now && startDate <= oneMonthFromNow;
-    }
+      // Mostrar todas las reservas si no se selecciona ningún filtro específico
+      return true;
+    })
+    .sort((a, b) => {
+      // Convertir las fechas en objetos Date para compararlas
+      const [dayA, monthA, yearA] = a.dateStart.split("-");
+      const [dayB, monthB, yearB] = b.dateStart.split("-");
 
-    return true; // Mostrar todas las reservas si no hay filtro
-  });
+      const dateA = new Date(`${yearA}-${monthA}-${dayA}`);
+      const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
+
+      return dateA - dateB; // Orden ascendente (más antiguas primero)
+    });
 
   return (
     <section className="min-h-[40rem] font-cedarville text-green-900">
@@ -63,24 +69,59 @@ const ConsultaReservas = () => {
         >
           Todas
         </button>
-        <button
-          className={`px-4 py-2 mx-2 ${
-            filterType === "week" ? "bg-green-700 text-white" : "bg-gray-300"
-          }`}
-          onClick={() => setFilterType("week")}
-        >
-          Próxima Semana
-        </button>
+
         <button
           className={`px-4 py-2 mx-2 ${
             filterType === "month" ? "bg-green-700 text-white" : "bg-gray-300"
           }`}
           onClick={() => setFilterType("month")}
         >
-          Próximo Mes
+          Mes
+        </button>
+        <button
+          className={`px-4 py-2 mx-2 ${
+            filterType === "year" ? "bg-green-700 text-white" : "bg-gray-300"
+          }`}
+          onClick={() => setFilterType("year")}
+        >
+          Año
         </button>
       </div>
-      {filteredReservations ? (
+
+      {/* Si el filtro es "month" o "year", mostrar el selector correspondiente */}
+      {filterType === "month" && (
+        <div className="flex justify-center space-x-4 mb-4">
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            className="px-4 py-2"
+          >
+            {Array.from({ length: 12 }, (_, index) => (
+              <option key={index} value={index + 1}>
+                {new Date(0, index).toLocaleString("default", {
+                  month: "long",
+                })}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {filterType === "year" && (
+        <div className="flex justify-center space-x-4 mb-4">
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="px-4 py-2"
+          >
+            <option value={2027}>2027</option>
+            <option value={2026}>2026</option>
+            <option value={2025}>2025</option>
+          </select>
+        </div>
+      )}
+
+      {filteredReservations && filteredReservations.length > 0 ? (
         <ul className="my-16">
           {filteredReservations?.map((reserva) => (
             <Reservas key={reserva.id} reserva={reserva} />
@@ -88,7 +129,23 @@ const ConsultaReservas = () => {
         </ul>
       ) : (
         <div className="justify-center text-3xl my-16 text-red-600 flex">
-          <p>No hay reservas disponibles... </p>
+          {filterType === "month" ? (
+            <p>
+              No tienes reservas para el mes de{" "}
+              <span>
+                {new Date(0, selectedMonth - 1).toLocaleString("default", {
+                  month: "long",
+                })}
+              </span>{" "}
+              del año <span>{selectedYear}</span>.
+            </p>
+          ) : filterType === "year" ? (
+            <p>
+              No tienes reservas para el año <span>{selectedYear}</span>.
+            </p>
+          ) : (
+            <p>No tienes reservas...</p>
+          )}
           <TbMoodSadSquint />
         </div>
       )}
