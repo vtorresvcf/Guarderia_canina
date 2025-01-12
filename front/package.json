@@ -33,6 +33,7 @@
     "react-router-dom": "^6.26.2",
     "resend": "^4.0.1",
     "sonner": "^1.7.0",
+    "uvcanvas": "^0.2.2",
     "yup": "^1.4.0",
     "zustand": "^5.0.0-rc.2"
   },
