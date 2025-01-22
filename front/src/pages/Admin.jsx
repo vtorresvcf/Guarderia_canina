@@ -1,13 +1,31 @@
+import { useState, useEffect } from "react";
+import Admin_lateral from "../components/Admin_lateral";
+import Admin_Reservas from "../components/Admin_Reservas";
+import useReservationStore from "../store/store";
 const Admin = () => {
-  return (
-    <div className="min-h-full bg-gray-200">
-      <div className=" h-28 flex justify-center items-center text-5xl font-extrabold bg-gradient-to-r  from-gray-700  via-gray-600  to-gray-400 text-transparent bg-clip-text ">
-        Administrador
-      </div>
+  const [selection, setSelection] = useState("");
+  const { getAllReservas } = useReservationStore();
 
+  useEffect(() => {
+    getAllReservas();
+  }, [getAllReservas]);
+
+  return (
+    <div className="min-h-full ">
       <div className="flex h-screen">
-        <div className=" bg-slate-500 text-white w-1/4">Lateral</div>
-        <div className="bg-orange-200 w-3/4">Central</div>
+        <Admin_lateral setSelection={setSelection} selection={selection} />
+        <div className="bg-slate-100 w-3/4 border border-slate-500">
+          <div className="h-10 border border-slate-500 flex justify-center items-center text-xl md:text-3xl font-mono text-black bg-white font-extrabold  ">
+            Administrador
+          </div>
+          <div className="border border-slate-500 h-full">
+            {selection === "servicios" && "Contenido de servicios"}
+            {selection === "reservas" && <Admin_Reservas />}
+            {selection === "contabilidad" && "Contenido de contabilidad"}
+            {selection === "usuarios" && "Contenido de usuarios"}
+            {!selection && <p>Selecciona una sección</p>}
+          </div>
+        </div>
       </div>
     </div>
   );

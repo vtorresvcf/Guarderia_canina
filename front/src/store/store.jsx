@@ -327,6 +327,58 @@ const useReservationStore = create(
       }
     },
 
+    getAllReservas: async () => {
+      const token = localStorage.getItem("authToken");
+      const cleanToken = token.replace(/^"(.*)"$/, "$1");
+      // Verifica si el token está presente
+      if (!token) {
+        set({
+          error: "No hay un token de autenticación. Por favor, inicia sesión.",
+          isLoading: false,
+        });
+        toast.error("No hay un token de autenticación.");
+        return;
+      }
+
+      try {
+        set({ isLoading: true, error: null });
+
+        const response = await axios.get(
+          "http://127.0.0.1:5000/getAllReservations",
+          {
+            headers: {
+              Authorization: `Bearer ${cleanToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.data.reservations) {
+          set({
+            message: response.data.msg,
+          });
+          toast.error(response.data.msg);
+        } else {
+          set({
+            reservations: response.data.reservations,
+          });
+        }
+
+        setTimeout(() => {
+          set({ message: null });
+        }, 5000);
+      } catch (error) {
+        console.error("Error en la solicitud:", error.response || error);
+        const errorMessage =
+          error.response?.data?.msg || error.message || "Error desconocido";
+        set({
+          error: errorMessage,
+          isLoading: false,
+        });
+        toast.error(errorMessage);
+      }
+    },
+
     reset: () =>
       set({
         reservation: false,
