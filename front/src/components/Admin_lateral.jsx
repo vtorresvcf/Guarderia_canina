@@ -5,7 +5,7 @@ import ImageReserva from "../assets/icon-admin-reserva.png";
 import ImageUsers from "../assets/icon-admin-users.png";
 
 const Admin_lateral = ({ selection, setSelection }) => {
-  const sections = ["servicios", "reservas", "contabilidad", "users"];
+  const sections = ["servicios", "reservas", "contabilidad", "usuarios"];
   const icons = [ImageService, ImageReserva, ImageContabilidad, ImageUsers];
   return (
     <div className="border border-white bg-black text-white min-w-60 w-1/4 flex flex-col ">

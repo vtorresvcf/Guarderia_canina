@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import Admin_lateral from "../components/Admin_lateral";
 import Admin_Reservas from "../components/Admin_Reservas";
 import useReservationStore from "../store/store";
+import Admin_Central from "../components/Admin_Central";
+
 const Admin = () => {
   const [selection, setSelection] = useState("");
-  const { getAllReservas } = useReservationStore();
+  const { getAllAdmin } = useReservationStore();
 
   useEffect(() => {
-    getAllReservas();
-  }, [getAllReservas]);
+    getAllAdmin();
+  }, [getAllAdmin]);
 
   return (
     <div className="min-h-full ">
@@ -19,10 +21,10 @@ const Admin = () => {
             Administrador
           </div>
           <div className="border border-slate-500 h-full">
-            {selection === "servicios" && "Contenido de servicios"}
+            {selection === "servicios" && <Admin_Central text="servicios" />}
             {selection === "reservas" && <Admin_Reservas />}
             {selection === "contabilidad" && "Contenido de contabilidad"}
-            {selection === "usuarios" && "Contenido de usuarios"}
+            {selection === "usuarios" && <Admin_Central text="usuarios" />}
             {!selection && <p>Selecciona una sección</p>}
           </div>
         </div>

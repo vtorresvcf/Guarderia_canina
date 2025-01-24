@@ -6,8 +6,6 @@ import { toast } from "sonner";
 const useReservationStore = create(
   devtools((set) => ({
     token: JSON.parse(localStorage.getItem("authToken")) || null,
-    dateStart: null,
-    endDate: null,
     isAuthenticated: false,
     user: JSON.parse(localStorage.getItem("user")) || null,
     message: null,
@@ -327,7 +325,7 @@ const useReservationStore = create(
       }
     },
 
-    getAllReservas: async () => {
+    getAllAdmin: async () => {
       const token = localStorage.getItem("authToken");
       const cleanToken = token.replace(/^"(.*)"$/, "$1");
       // Verifica si el token está presente
@@ -343,15 +341,12 @@ const useReservationStore = create(
       try {
         set({ isLoading: true, error: null });
 
-        const response = await axios.get(
-          "http://127.0.0.1:5000/getAllReservations",
-          {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get("http://127.0.0.1:5000/getAllAdmin", {
+          headers: {
+            Authorization: `Bearer ${cleanToken}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.data.reservations) {
           set({
@@ -359,8 +354,11 @@ const useReservationStore = create(
           });
           toast.error(response.data.msg);
         } else {
+          const { reservations, users, services } = response.data;
           set({
-            reservations: response.data.reservations,
+            reservations: reservations,
+            usuarios: users,
+            servicios: services,
           });
         }
 
