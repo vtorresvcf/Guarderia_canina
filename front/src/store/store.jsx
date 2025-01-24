@@ -6,8 +6,6 @@ import { toast } from "sonner";
 const useReservationStore = create(
   devtools((set) => ({
     token: JSON.parse(localStorage.getItem("authToken")) || null,
-    dateStart: null,
-    endDate: null,
     isAuthenticated: false,
     user: JSON.parse(localStorage.getItem("user")) || null,
     message: null,
@@ -310,6 +308,58 @@ const useReservationStore = create(
           });
           console.error("Error en la reserva:", response.data.msg);
           toast.error(response.data.msg);
+        }
+
+        setTimeout(() => {
+          set({ message: null });
+        }, 5000);
+      } catch (error) {
+        console.error("Error en la solicitud:", error.response || error);
+        const errorMessage =
+          error.response?.data?.msg || error.message || "Error desconocido";
+        set({
+          error: errorMessage,
+          isLoading: false,
+        });
+        toast.error(errorMessage);
+      }
+    },
+
+    getAllAdmin: async () => {
+      const token = localStorage.getItem("authToken");
+      const cleanToken = token.replace(/^"(.*)"$/, "$1");
+      // Verifica si el token está presente
+      if (!token) {
+        set({
+          error: "No hay un token de autenticación. Por favor, inicia sesión.",
+          isLoading: false,
+        });
+        toast.error("No hay un token de autenticación.");
+        return;
+      }
+
+      try {
+        set({ isLoading: true, error: null });
+
+        const response = await axios.get("http://127.0.0.1:5000/getAllAdmin", {
+          headers: {
+            Authorization: `Bearer ${cleanToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.data.reservations) {
+          set({
+            message: response.data.msg,
+          });
+          toast.error(response.data.msg);
+        } else {
+          const { reservations, users, services } = response.data;
+          set({
+            reservations: reservations,
+            usuarios: users,
+            servicios: services,
+          });
         }
 
         setTimeout(() => {

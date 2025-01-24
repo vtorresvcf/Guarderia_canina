@@ -13,18 +13,18 @@ import Admin from "./pages/Admin";
 
 const App = () => {
   const { user } = useReservationStore(); // Obtenemos el estado del usuario
-
+  const isAdmin = user?.is_admin;
   return (
     <>
       {/* Mostrar Navbar y Footer solo si no es admin */}
-      {!user.is_admin && <Navbar />}
+      {!isAdmin && <Navbar />}
 
       <Routes>
         {/* Ruta para administrador */}
-        {user.is_admin && <Route path="/admin" element={<Admin />} />}
+        {isAdmin && <Route path="/admin" element={<Admin />} />}
 
         {/* Rutas generales solo visibles si no es admin */}
-        {!user.is_admin && (
+        {!isAdmin && (
           <>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
@@ -39,12 +39,12 @@ const App = () => {
         {/* Redirigir cualquier ruta no encontrada según el rol */}
         <Route
           path="*"
-          element={<Navigate to={user.is_admin ? "/admin" : "/"} replace />}
+          element={<Navigate to={isAdmin ? "/admin" : "/"} replace />}
         />
       </Routes>
 
       {/* Mostrar Footer solo si no es admin */}
-      {!user.is_admin && <Footer />}
+      {!isAdmin && <Footer />}
     </>
   );
 };
