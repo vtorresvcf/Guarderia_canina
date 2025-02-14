@@ -1,25 +1,41 @@
+import os
+os.environ["FLASK_ENV"] = "development"
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
+from config import Config
 
-app = Flask(__name__)
-CORS(app)
+# Inicialización de extensiones
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+migrate = Migrate()
+jwt = JWTManager()
 
-# Configuración de la base de datos PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:C0c0123#@localhost:5432/guarderia'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app():
+    app = Flask(__name__)
+    CORS(app)
+    app.config.from_object(Config)
 
-# Inicializar SQLAlchemy, Flask-Migrate y Bcript
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-bcrypt = Bcrypt(app)
+    if os.environ.get('FLASK_ENV') == 'development':
+        app.config['DEBUG'] = True
+    else:
+        app.config['DEBUG'] = False
 
-# Importar modelos y rutas
-from models import *
-from routes import *
+    # Inicializar extensiones
+    db.init_app(app)
+    bcrypt.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
 
+    
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # Registrar las rutas
+    with app.app_context():
+        from routes import bp as routes_bp
+        app.register_blueprint(routes_bp)
+
+    return app
+
