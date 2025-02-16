@@ -1,13 +1,22 @@
+import { useRef, useEffect } from "react";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import useReservationStore from "../store/store";
 
 const FormRegister = () => {
   const { registerUser } = useReservationStore();
+  const emailInputRef = useRef(null);
+  const formRef = useRef(null);
   const handleSubmit = async (values, { resetForm }) => {
     await registerUser(values);
     resetForm();
   };
+
+  useEffect(() => {
+    emailInputRef.current?.focus();
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
+
   return (
     <div className=" h-full">
       <Formik
@@ -40,12 +49,13 @@ const FormRegister = () => {
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} useRef={formRef}>
             <div className="flex flex-col mx-10 py-5">
               <Field
                 type="text"
                 name="name"
                 placeholder="Nombre"
+                ref={emailInputRef}
                 className="text-center rounded-3xl py-2 shadow-md"
               />
               <ErrorMessage
