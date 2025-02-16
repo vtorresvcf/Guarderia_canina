@@ -1,82 +1,141 @@
 import Logo from "./Logo";
 import "../index.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import useReservationStore from "../store/store";
 
+const buttonVariants = {
+  hover: { scale: 1.1, transition: { duration: 0.2 } },
+  tap: { scale: 0.9 },
+};
+
+const menuVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
+};
+
 const Header = () => {
-  const [openDropdown, setOpenDropdown] = useState(false);
   const { logout, user } = useReservationStore();
+  const [showText, setShowText] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState(false); // Estado para el menú
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowText(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <header className="fondo">
-      <nav className="flex items-center  py-6 justify-between text-white  mx-auto w-full  ">
+    <header className="fondo flex flex-col">
+      <nav className="flex items-center py-6 justify-between text-white mx-auto w-full h-2/5">
         <div className="container mx-auto flex px-2">
           <div>
             <Logo color="white" />
           </div>
-          <div className=" w-full hidden md:flex ">
+          <div className="w-full hidden md:flex">
             <div className="flex mx-auto">
-              <ul className="flex items-center gap-5 mx-auto text-xl lg:text-3xl ">
+              <ul className="flex items-center gap-5 mx-auto text-xl lg:text-3xl">
                 <Link to="/">
-                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                  <motion.li
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
                     Home
-                  </li>
+                  </motion.li>
                 </Link>
                 <Link to="/services">
-                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                  <motion.li
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
                     Servicios
-                  </li>
+                  </motion.li>
                 </Link>
                 <Link to="/reservation">
-                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                  <motion.li
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
                     Reservar
-                  </li>
+                  </motion.li>
                 </Link>
                 <Link to="/contact">
-                  <li className="hover:text-4xl hover:underline hover:decoration-4">
+                  <motion.li
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
                     Contacto
-                  </li>
+                  </motion.li>
                 </Link>
                 {user && (
                   <Link to="/consultaReservas">
-                    <li className="hover:text-4xl hover:underline hover:decoration-4">
+                    <motion.li
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
                       Reservas
-                    </li>
+                    </motion.li>
                   </Link>
                 )}
               </ul>
             </div>
-            <div className="flex  gap-3 justify-center">
+            <div className="flex gap-3 justify-center">
               {user ? (
                 <>
-                  <button className="bn3637 bn36">{user.name}</button>
-                  <button
+                  <motion.button
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                    className="bn3637 bn36"
+                  >
+                    {user.name}
+                  </motion.button>
+                  <motion.button
                     onClick={logout}
-                    className="text-2xl  border-x-white underline hover:font-bold"
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                    className="text-2xl border-x-white underline hover:font-bold"
                   >
                     Cerrar sesión
-                  </button>
+                  </motion.button>
                 </>
               ) : (
                 <>
                   <Link to="login">
-                    <button className="bn3637 bn36">Login</button>
+                    <motion.button
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="bn3637 bn36"
+                    >
+                      Login
+                    </motion.button>
                   </Link>
                   <Link to="register">
-                    <button className="bn47">Sign up</button>
+                    <motion.button
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="bn47"
+                    >
+                      Sign up
+                    </motion.button>
                   </Link>
                 </>
               )}
             </div>
           </div>
 
-          {/* Dropdown*/}
+          {/* Botón menú hamburguesa */}
           <div className="relative items-center sm:hidden mx-auto">
-            <button
+            <motion.button
               type="button"
               className="text-white focus:outline-none"
               onClick={() => setOpenDropdown(!openDropdown)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <svg
                 className="w-10 h-10"
@@ -93,42 +152,76 @@ const Header = () => {
                   d="M4 6h16M4 12h16m-7 6h7"
                 />
               </svg>
-            </button>
+            </motion.button>
           </div>
         </div>
-        {/* Dropdown menu */}
 
-        <ul
-          className={`absolute top-20 right-10 text-center md:hidden border rounded-xl p-1 transition-transform duration-500 ease-in-out ${
-            openDropdown
-              ? "transform translate-y-0 opacity-100"
-              : "transform -translate-y-10 opacity-0"
-          }`}
-        >
+        {/* Dropdown menú con animación */}
+        <AnimatePresence>
           {openDropdown && (
-            <>
-              <li>Home</li>
-              <li className="py-1">Servicios</li>
-              <li>Reservar</li>
-              <li className="py-1">Contacto</li>
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={menuVariants}
+              className="absolute top-20 right-10 bg-white text-black text-center md:hidden border rounded-xl p-2 shadow-md"
+            >
+              <Link to="/" onClick={() => setOpenDropdown(false)}>
+                <li className="py-2 hover:bg-gray-200 rounded-md">Home</li>
+              </Link>
+              <Link to="/services" onClick={() => setOpenDropdown(false)}>
+                <li className="py-2 hover:bg-gray-200 rounded-md">Servicios</li>
+              </Link>
+              <Link to="/reservation" onClick={() => setOpenDropdown(false)}>
+                <li className="py-2 hover:bg-gray-200 rounded-md">Reservar</li>
+              </Link>
+              <Link to="/contact" onClick={() => setOpenDropdown(false)}>
+                <li className="py-2 hover:bg-gray-200 rounded-md">Contacto</li>
+              </Link>
               <div className="border-t-2 py-2">
-                <button
-                  className="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-white hover:bg-slate-100 hover:text-black focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  type="button"
-                >
-                  Login
-                </button>
-                <button
-                  className="  rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-white hover:bg-slate-100 hover:text-black focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  type="button"
-                >
-                  Sign up
-                </button>
+                {user ? (
+                  <>
+                    <button
+                      onClick={logout}
+                      className="w-full py-2 px-4 text-center text-sm transition-all text-black hover:bg-gray-200 rounded-md"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="login" onClick={() => setOpenDropdown(false)}>
+                      <button className="w-full py-2 px-4 text-center text-sm transition-all text-black hover:bg-gray-200 rounded-md">
+                        Login
+                      </button>
+                    </Link>
+                    <Link to="register" onClick={() => setOpenDropdown(false)}>
+                      <button className="w-full py-2 px-4 text-center text-sm transition-all text-black hover:bg-gray-200 rounded-md">
+                        Sign up
+                      </button>
+                    </Link>
+                  </>
+                )}
               </div>
-            </>
+            </motion.ul>
           )}
-        </ul>
+        </AnimatePresence>
       </nav>
+      <div className="flex justify-center pt-10 text-4xl">
+        <AnimatePresence>
+          {showText && (
+            <motion.h2
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="text-white bg-gray-200/50 backdrop-blur-md px-6 py-4 rounded-lg inline-block"
+            >
+              Tu aventura comienza aquí !!!
+            </motion.h2>
+          )}
+        </AnimatePresence>
+      </div>
     </header>
   );
 };
