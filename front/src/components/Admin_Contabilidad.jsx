@@ -58,11 +58,11 @@ const Admin_Contabilidad = () => {
   const monthlyData = groupByMonthAndYear(reservations);
 
   return (
-    <div className="flex justify-center py-10 flex-col">
+    <div className="flex justify-center py-10 flex-col  ">
       <h1 className="w-full text-center text-3xl pb-10 font-semibold font-serif">
         Tablas de ganancias por mensualidad
       </h1>
-      <div className="flex gap-4 justify-center">
+      <div className="flex gap-4 justify-center flex-col mx-auto md:flex-row">
         {Object.entries(monthlyData).map(([year, months]) => (
           <div key={year}>
             <h2 className="text-2xl font-semibold mb-4 text-center">{year}</h2>
@@ -76,7 +76,7 @@ const Admin_Contabilidad = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(months).map(([month, total], index) => (
+                {Object.entries(months).map(([month, total]) => (
                   <tr
                     className="odd:bg-white even:bg-gray-100 text-center"
                     key={`${year}-${month}`}
