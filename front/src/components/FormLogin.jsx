@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import useReservationStore from "../store/store";
+import { motion } from "framer-motion";
 
 const FormLogin = () => {
   const { loginUser } = useReservationStore();
@@ -39,7 +40,7 @@ const FormLogin = () => {
                 type="email"
                 name="email"
                 placeholder="Email"
-                useRef={emailInputRef}
+                innerRef={emailInputRef}
                 className="text-center rounded-3xl py-2 shadow-md"
               />
               <ErrorMessage
@@ -62,21 +63,14 @@ const FormLogin = () => {
               />
             </div>
             <div className="flex flex-col mx-10 py-5">
-              <button
+              <motion.button
                 type="submit"
                 className="w-full bg-green-700 rounded-xl py-2 shadow-2xl hover:bg-green-600 transition-all text-white "
                 disabled={isSubmitting}
+                whileTap={{ scale: 0.85 }}
               >
                 {isSubmitting ? "Enviando..." : "Enviar"}
-              </button>
-            </div>
-            <div className="text-center bg-white">
-              <p>
-                Has olvidado la contraseña?
-                <span className="pl-2 underline cursor-pointer opacity-60 hover:font-bold">
-                  Pulsa aquí
-                </span>
-              </p>
+              </motion.button>
             </div>
           </Form>
         )}
