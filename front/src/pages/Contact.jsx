@@ -4,6 +4,7 @@ import { Formik, Field, ErrorMessage, Form } from "formik";
 import { Toaster, toast } from "sonner";
 import * as Yup from "yup";
 import emailjs from "@emailjs/browser";
+import { motion } from "framer-motion";
 
 // Configuración de validaciones y valores iniciales
 const initialValues = {
@@ -59,24 +60,24 @@ const Contact = () => {
   const fieldClass = "w-full bg-slate-100 mb-5 mt-3 p-2";
 
   return (
-    <div className="min-h-screen flex flex-col items-center">
+    <div className="min-h-screen flex flex-col items-center shadow-xl">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={sendEmail}
       >
-        {({ isSubmitting, handleSubmit }) => (
+        {({ isSubmitting }) => (
           <div className="bg-white w-[30rem] md:w-[40rem] mt-20 mx-auto shadow-lg rounded-lg p-8">
             <h1 className="cursor-default text-3xl text-center font-pacifico underline underline-offset-8 mb-8">
               Contáctenos
             </h1>
-            <Form ref={formRef}>
+            <Form useRef={formRef}>
               <div className="flex flex-col mx-10">
                 <label htmlFor="name">Nombre: *</label>
                 <Field
                   type="text"
                   id="name"
-                  ref={emailInputRef}
+                  innerRef={emailInputRef}
                   name="name"
                   className={fieldClass}
                 />
@@ -133,13 +134,14 @@ const Contact = () => {
               </div>
 
               <div className="flex mx-10">
-                <button
+                <motion.button
                   type="submit"
                   disabled={isSubmitting}
+                  whileTap={{ scale: 0.85 }}
                   className="w-full bg-green-700 hover:bg-green-900 text-white font-extrabold text-xl py-4 px-4 text-center rounded-md transition-all"
                 >
                   {isSubmitting ? "Enviando..." : "Enviar"}
-                </button>
+                </motion.button>
                 <Toaster richColors />
               </div>
             </Form>

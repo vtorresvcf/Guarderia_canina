@@ -19,7 +19,7 @@ const Login = () => {
   }, [login, navigate]);
   return (
     <div className="min-h-[50rem] relative">
-      <div className="w-[25rem] bg-white h-[45rem]  mx-auto my-12 border-2 border-green-500 rounded-lg ">
+      <div className="w-[25rem] bg-white h-[45rem]  mx-auto my-12 border-2 shadow-2xl rounded-xl ">
         <div className="bg-white h-1/5 justify-center  flex items-center rounded-lg ">
           <Logo />
         </div>

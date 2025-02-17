@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import useReservationStore from "../store/store";
 import { format, parse } from "date-fns";
+import { motion } from "framer-motion";
 
 const Reservas = ({ reserva }) => {
   const {
@@ -141,12 +142,13 @@ const Reservas = ({ reserva }) => {
                     )}
                   </div>
                   <div className="flex gap-4 mt-4 w-full">
-                    <button
+                    <motion.button
                       type="submit"
+                      whileTap={{ scale: 0.85 }}
                       className="px-4 w-1/2 py-2   bg-green-700 hover:bg-green-600 transition-all duration-300 text-white rounded"
                     >
                       Guardar
-                    </button>
+                    </motion.button>
                     <button
                       type="button"
                       onClick={() => setIsEditing(false)}

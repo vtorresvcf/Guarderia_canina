@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import * as Yup from "yup";
 import useReservationStore from "../store/store";
+import { motion } from "framer-motion";
 
 const FormRegister = () => {
   const { registerUser } = useReservationStore();
@@ -55,7 +56,7 @@ const FormRegister = () => {
                 type="text"
                 name="name"
                 placeholder="Nombre"
-                ref={emailInputRef}
+                innerRef={emailInputRef}
                 className="text-center rounded-3xl py-2 shadow-md"
               />
               <ErrorMessage
@@ -117,13 +118,14 @@ const FormRegister = () => {
               />
             </div>
             <div className="flex flex-col mx-10 py-5">
-              <button
+              <motion.button
                 type="submit"
                 className="w-full bg-green-700 rounded-xl py-2 shadow-2xl hover:bg-green-600 transition-all text-white"
                 disabled={isSubmitting}
+                whileTap={{ scale: 0.85 }}
               >
                 {isSubmitting ? "Enviando..." : "Enviar"}
-              </button>
+              </motion.button>
             </div>
           </Form>
         )}

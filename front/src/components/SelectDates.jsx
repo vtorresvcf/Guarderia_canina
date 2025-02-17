@@ -10,6 +10,7 @@ import { GiDogHouse } from "react-icons/gi";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const SelectDates = () => {
   const { dateStart, endDate, places, reset, setReserva, user } =
@@ -135,12 +136,13 @@ const SelectDates = () => {
                 />
               </div>
               <div>
-                <button
+                <motion.button
                   className="flex-shrink-0 bg-green-700 hover:bg-green-800 border-green-700 hover:border-green-900 border-4 text-white py-1 px-2 rounded"
                   type="submit"
+                  whileTap={{ scale: 0.85 }}
                 >
                   Reservar
-                </button>
+                </motion.button>
                 <button
                   className="flex-shrink-0 border-transparent border-4 text-green-700 hover:text-green-900 py-1 px-2 rounded"
                   type="button"
