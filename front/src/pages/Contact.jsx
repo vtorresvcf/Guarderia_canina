@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 
-// Configuración de validaciones y valores iniciales
 const initialValues = {
   name: "",
   email: "",
@@ -56,81 +55,114 @@ const Contact = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
-  // Clase común para los campos de formulario
   const fieldClass = "w-full bg-slate-100 mb-5 mt-3 p-2";
 
   return (
-    <div className="min-h-screen flex flex-col items-center shadow-xl">
+    <div className="min-h-[45rem] flex flex-col items-center shadow-xl">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={sendEmail}
       >
         {({ isSubmitting }) => (
-          <div className="bg-white w-[30rem] md:w-[40rem] mt-20 mx-auto shadow-lg rounded-lg p-8">
-            <h1 className="cursor-default text-3xl text-center font-pacifico underline underline-offset-8 mb-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="bg-white w-[30rem] md:w-[40rem] mt-20 mx-auto shadow-lg rounded-lg p-8"
+          >
+            <motion.h1
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="cursor-default text-3xl text-center font-pacifico underline underline-offset-8 mb-8"
+            >
               Contáctenos
-            </h1>
+            </motion.h1>
             <Form useRef={formRef}>
               <div className="flex flex-col mx-10">
                 <label htmlFor="name">Nombre: *</label>
-                <Field
-                  type="text"
-                  id="name"
-                  innerRef={emailInputRef}
-                  name="name"
-                  className={fieldClass}
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-600"
-                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Field
+                    type="text"
+                    id="name"
+                    innerRef={emailInputRef}
+                    name="name"
+                    className={fieldClass}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="text-red-600"
+                  />
+                </motion.div>
               </div>
 
               <div className="flex flex-col mx-10">
                 <label htmlFor="email">Email: *</label>
-                <Field
-                  type="email"
-                  id="email"
-                  name="email"
-                  className={fieldClass}
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-600"
-                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    className={fieldClass}
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-600"
+                  />
+                </motion.div>
               </div>
 
               <div className="flex flex-col mx-10">
                 <label htmlFor="cuestion">Asunto: *</label>
-                <Field
-                  type="text"
-                  id="cuestion"
-                  name="cuestion"
-                  className={fieldClass}
-                />
-                <ErrorMessage
-                  name="cuestion"
-                  component="div"
-                  className="text-red-600"
-                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  <Field
+                    type="text"
+                    id="cuestion"
+                    name="cuestion"
+                    className={fieldClass}
+                  />
+                  <ErrorMessage
+                    name="cuestion"
+                    component="div"
+                    className="text-red-600"
+                  />
+                </motion.div>
               </div>
 
               <div className="flex flex-col mx-10">
                 <label htmlFor="message">Mensaje: *</label>
-                <Field
-                  as="textarea"
-                  id="message"
-                  name="message"
-                  className="resize-y w-full bg-slate-100 mb-5 mt-3 p-2"
-                />
-                <ErrorMessage
-                  name="message"
-                  component="div"
-                  className="text-red-600"
-                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <Field
+                    as="textarea"
+                    id="message"
+                    name="message"
+                    className="resize-y w-full bg-slate-100 mb-5 mt-3 p-2"
+                  />
+                  <ErrorMessage
+                    name="message"
+                    component="div"
+                    className="text-red-600"
+                  />
+                </motion.div>
               </div>
 
               <div className="flex mx-10">
@@ -138,6 +170,9 @@ const Contact = () => {
                   type="submit"
                   disabled={isSubmitting}
                   whileTap={{ scale: 0.85 }}
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
                   className="w-full bg-green-700 hover:bg-green-900 text-white font-extrabold text-xl py-4 px-4 text-center rounded-md transition-all"
                 >
                   {isSubmitting ? "Enviando..." : "Enviar"}
@@ -145,11 +180,16 @@ const Contact = () => {
                 <Toaster richColors />
               </div>
             </Form>
-          </div>
+          </motion.div>
         )}
       </Formik>
 
-      <div className="bg-white py-4 w-[30rem] md:w-[40rem] mx-auto mb-20 mt-4 rounded-lg divide-y md:divide-y-0 md:divide-x divide-gray-400 shadow-lg gap-4 grid grid-cols-1 md:grid-cols-2 text-center items-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="bg-white py-4 w-[30rem] md:w-[40rem] mx-auto mb-20 mt-4 rounded-lg divide-y md:divide-y-0 md:divide-x divide-gray-400 shadow-lg gap-4 grid grid-cols-1 md:grid-cols-2 text-center items-center"
+      >
         <div className="flex justify-center pr-2">
           <Logo color="black" />
         </div>
@@ -158,7 +198,7 @@ const Contact = () => {
           <p className="font-thin">Calle de la Paz, 12</p>
           <p className="font-thin">46711 Miramar Valencia, España</p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

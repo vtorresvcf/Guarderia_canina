@@ -3,14 +3,34 @@ import { devtools } from "zustand/middleware";
 import axios from "axios";
 import { toast } from "sonner";
 
+const API_BASE_URL = "http://127.0.0.1:5000";
+const TOAST_TIMEOUT = 5000;
+
+const getCleanToken = () => {
+  const token = localStorage.getItem("authToken");
+  return token ? token.replace(/^"(.*)"$/, "$1") : null;
+};
+
+const handleAuthError = (
+  set,
+  message = "No hay token de autenticación. Por favor, inicia sesión."
+) => {
+  set({ error: message, isLoading: false });
+  toast.error(message);
+  return false;
+};
+
 const useReservationStore = create(
-  devtools((set) => ({
+  devtools((set, get) => ({
     token: JSON.parse(localStorage.getItem("authToken")) || null,
     isAuthenticated: false,
     user: JSON.parse(localStorage.getItem("user")) || null,
     message: null,
     reservations: null,
     servicios: null,
+    isLoading: false,
+    error: null,
+    Allservices: [],
 
     logout: () => {
       setTimeout(() => {
@@ -19,477 +39,310 @@ const useReservationStore = create(
         set({
           user: null,
           message: null,
-          isLoading: null,
-          login: null,
+          isLoading: false,
           token: null,
+          isAuthenticated: false,
         });
       }, 1000);
     },
 
     registerUser: async (values) => {
-      set({ isLoading: true, error: null });
       try {
-        const response = await axios.post(
-          "http://127.0.0.1:5000/add_user",
-          values
-        );
+        set({ isLoading: true, error: null });
+        const { data } = await axios.post(`${API_BASE_URL}/add_user`, values);
 
-        if (response.data.register === false) {
-          set({
-            message: response.data.msg,
-            register: response.data.register,
-          });
-        } else {
-          set({
-            user: response.data.user,
-            message: response.data.msg,
-            register: response.data.register,
-          });
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-          localStorage.setItem(
-            "authToken",
-            JSON.stringify(response.data.token)
-          );
-        }
-        setTimeout(() => {
-          set({ message: null });
-        }, 4000);
-      } catch (error) {
-        set({
-          error: error.response?.data?.msg || "Error desconocido",
+        const newState = {
+          message: data.msg,
+          register: data.register,
           isLoading: false,
-        });
-        alert("Error al registrar");
+        };
+
+        if (data.register) {
+          Object.assign(newState, {
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+          });
+          localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("authToken", JSON.stringify(data.token));
+        }
+
+        set(newState);
+        setTimeout(() => set({ message: null }), 4000);
+      } catch (error) {
+        const errorMsg = error.response?.data?.msg || "Error al registrar";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
+    getServices: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/services`);
+        set({ Allservices: response.data.services });
+      } catch (error) {
+        const errorMsg = console.error("Error al obtener los servicios", error);
+        set({ error: errorMsg, isLoading: false });
+      }
+    },
+
     addService: async (values) => {
-      set({ isLoading: true, error: null });
-      const token = localStorage.getItem("authToken");
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:5000/add_service",
-          values,
-          {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-            },
-          }
-        );
-
-        if (
-          response.data.success === "True" ||
-          response.data.success === true
-        ) {
-          const { servicios } = useReservationStore.getState();
-          const message = response?.data?.msg || "Error desconocido";
-          set({
-            message: message,
-            servicios: [...servicios, response.data.service],
-          });
-
-          toast.success(message);
-
-          setTimeout(() => {
-            set({ message: null });
-          }, 4000);
-        }
-
-        // Asegurarse de que isLoading se restablezca
-        set({ isLoading: false });
-      } catch (error) {
-        // Manejo de errores
-        const errorMessage = error.response?.data?.msg || "Error desconocido";
-        set({ error: errorMessage, isLoading: false });
-        console.error("Error al añadir el servicio:", error);
-        toast.error(errorMessage);
-      }
-    },
-    deleteService: async (id) => {
-      set({ isLoading: true, error: null });
-      const token = localStorage.getItem("authToken");
-
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
-
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
 
       try {
         set({ isLoading: true, error: null });
-
-        // Enviar la solicitud DELETE con el ID en el cuerpo
-        const response = await axios.delete(
-          "http://127.0.0.1:5000/delete_service",
+        const { data } = await axios.post(
+          `${API_BASE_URL}/add_service`,
+          values,
           {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-            },
-            data: { id }, // Se pasa el ID en el cuerpo de la solicitud
+            headers: { Authorization: `Bearer ${cleanToken}` },
           }
         );
 
-        const { msg, service_deleted, success } = response.data;
-        const { servicios } = useReservationStore.getState();
-
-        if (success) {
-          // Elimina el servicio eliminado de la lista
-          const updatedServices = servicios.filter(
-            (servicio) => servicio.id !== service_deleted.id
-          );
-          console.log(updatedServices);
-          set({ message: msg, servicios: updatedServices });
-          toast.success(msg);
-        } else {
-          set({ message: msg });
-          toast.error(msg);
+        if (data.success === "True" || data.success === true) {
+          const currentServices = get().servicios || [];
+          set({
+            message: data.msg,
+            servicios: [...currentServices, data.service],
+            isLoading: false,
+          });
+          toast.success(data.msg);
+          setTimeout(() => set({ message: null }), 4000);
         }
       } catch (error) {
-        set({
-          error: error.response?.data?.msg || "Error desconocido",
-          isLoading: false,
+        const errorMsg =
+          error.response?.data?.msg || "Error al añadir el servicio";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
+      }
+    },
+
+    deleteService: async (id) => {
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
+
+      try {
+        set({ isLoading: true, error: null });
+        const { data } = await axios.delete(`${API_BASE_URL}/delete_service`, {
+          headers: { Authorization: `Bearer ${cleanToken}` },
+          data: { id },
         });
-        toast.error(error.response?.data?.msg || "Error desconocido");
+
+        if (data.success) {
+          const currentServices = get().servicios || [];
+          set({
+            message: data.msg,
+            servicios: currentServices.filter(
+              (s) => s.id !== data.service_deleted.id
+            ),
+            isLoading: false,
+          });
+          toast.success(data.msg);
+        } else {
+          set({ message: data.msg, isLoading: false });
+          toast.error(data.msg);
+        }
+      } catch (error) {
+        const errorMsg =
+          error.response?.data?.msg || "Error al eliminar el servicio";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
 
     loginUser: async (values) => {
       try {
         set({ isLoading: true, error: null });
-        const response = await axios.post(
-          "http://127.0.0.1:5000/login",
-          values
-        );
-        if (response.data.login === false) {
-          set({
-            message: response.data.msg,
-            login: response.data.login,
-          });
-          toast.error(response.data.msg);
-        } else {
-          set({
-            user: response.data.user,
-            message: response.data.msg,
-            token: response.data.token,
-            login: response.data.login,
-          });
-          toast.success(response.data.msg);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-          localStorage.setItem(
-            "authToken",
-            JSON.stringify(response.data.token)
-          );
-        }
-        setTimeout(() => {
-          set({ message: null });
-        }, 5000);
-      } catch (error) {
-        set({
-          error: error.response?.data?.msg || "Error desconocido",
+        const { data } = await axios.post(`${API_BASE_URL}/login`, values);
+
+        const newState = {
+          message: data.msg,
+          login: data.login,
           isLoading: false,
-        });
-        alert("Error al logearse");
+        };
+
+        if (data.login) {
+          Object.assign(newState, {
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+          });
+          localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("authToken", JSON.stringify(data.token));
+          toast.success(data.msg);
+        } else {
+          toast.error(data.msg);
+        }
+
+        set(newState);
+        setTimeout(() => set({ message: null }), TOAST_TIMEOUT);
+      } catch (error) {
+        const errorMsg = error.response?.data?.msg || "Error al iniciar sesión";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
+
     setReserva: async (values) => {
-      const token = localStorage.getItem("authToken");
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
 
       try {
         set({ isLoading: true, error: null });
-
-        // Realiza la solicitud POST añadiendo el token al encabezado de autorización
-        const response = await axios.post(
-          "http://127.0.0.1:5000/add_reservation",
+        const { data } = await axios.post(
+          `${API_BASE_URL}/add_reservation`,
           values,
           {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-              "Content-Type": "application/json",
-            },
+            headers: { Authorization: `Bearer ${cleanToken}` },
           }
         );
 
-        if (response.data.reservation === false) {
-          set({
-            message: response.data.msg,
-            reservation: response.data.reservation,
-          });
-          toast.error(response.data.msg);
-        } else {
-          set({
-            service: response.data.service,
-            message: response.data.msg,
-            reservation: response.data.reservation,
-          });
-          toast.success(response.data.msg);
-        }
-
-        setTimeout(() => {
-          set({ message: null, reservation: false });
-        }, 5000);
-      } catch (error) {
-        console.error("Error en la solicitud:", error.response || error);
-        const errorMessage =
-          error.response?.data?.msg || error.message || "Error desconocido";
         set({
-          error: errorMessage,
+          message: data.msg,
+          reservation: data.reservation,
+          service: data.service,
           isLoading: false,
         });
-        toast.error(errorMessage);
+
+        data.reservation ? toast.success(data.msg) : toast.error(data.msg);
+        setTimeout(
+          () => set({ message: null, reservation: false }),
+          TOAST_TIMEOUT
+        );
+      } catch (error) {
+        const errorMsg =
+          error.response?.data?.msg || "Error al crear la reserva";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
+
     getReservas: async () => {
-      const token = localStorage.getItem("authToken");
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
 
       try {
         set({ isLoading: true, error: null });
-
-        const response = await axios.get(
-          "http://127.0.0.1:5000/getReservationsUser",
+        const { data } = await axios.get(
+          `${API_BASE_URL}/getReservationsUser`,
           {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-              "Content-Type": "application/json",
-            },
+            headers: { Authorization: `Bearer ${cleanToken}` },
           }
         );
 
-        if (!response.data.reservations) {
-          set({
-            message: response.data.msg,
-          });
-          toast.error(response.data.msg);
-        } else {
-          set({
-            reservations: response.data.reservations,
-          });
-        }
-
-        setTimeout(() => {
-          set({ message: null });
-        }, 5000);
-      } catch (error) {
-        console.error("Error en la solicitud:", error.response || error);
-        const errorMessage =
-          error.response?.data?.msg || error.message || "Error desconocido";
         set({
-          error: errorMessage,
+          reservations: data.reservations || null,
+          message: data.msg,
           isLoading: false,
         });
-        toast.error(errorMessage);
+
+        if (!data.reservations) toast.error(data.msg);
+        setTimeout(() => set({ message: null }), TOAST_TIMEOUT);
+      } catch (error) {
+        const errorMsg =
+          error.response?.data?.msg || "Error al obtener reservas";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
 
     deleteReserva: async (id) => {
-      const token = localStorage.getItem("authToken");
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
-      try {
-        const response = await axios.delete(
-          `http://127.0.0.1:5000/delete_reservation/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.data.success) {
-          const { reservations } = useReservationStore.getState();
-
-          const updatedReservations = reservations.filter(
-            (reserva) => reserva.id_reserva !== id
-          );
-          useReservationStore.setState({ reservations: updatedReservations });
-          toast.success(response.data.msg);
-        }
-
-        setTimeout(() => {
-          set({ message: null });
-        }, 5000);
-      } catch (error) {
-        console.error("Error en la solicitud:", error.response || error);
-        const errorMessage =
-          error.response?.data?.msg || error.message || "Error desconocido";
-        set({
-          error: errorMessage,
-          isLoading: false,
-        });
-        toast.error(errorMessage);
-      }
-    },
-    updatedReserva: async (values) => {
-      const token = localStorage.getItem("authToken");
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
 
       try {
         set({ isLoading: true, error: null });
-
-        const response = await axios.put(
-          `http://127.0.0.1:5000/update_reservation/${values.id_reserva}`,
-          values,
+        const { data } = await axios.delete(
+          `${API_BASE_URL}/delete_reservation/${id}`,
           {
-            headers: {
-              Authorization: `Bearer ${cleanToken}`,
-              "Content-Type": "application/json",
-            },
+            headers: { Authorization: `Bearer ${cleanToken}` },
           }
         );
 
-        if (response.data.updated) {
-          console.log(response.data.reservation);
-          const { reservations } = useReservationStore.getState();
-
-          const filterReserva = reservations.filter(
-            (reserva) => reserva.id_reserva !== values.id_reserva
-          );
-          const updatedReservas = [
-            ...filterReserva,
-            response.data.reservation || response.data.reservation_to_update,
-          ];
-          console.log(updatedReservas);
-
+        if (data.success) {
+          const currentReservations = get().reservations || [];
           set({
-            message: response.data.msg,
-            error: null,
+            reservations: currentReservations.filter(
+              (r) => r.id_reserva !== id
+            ),
             isLoading: false,
-            reservations: updatedReservas,
           });
-
-          toast.success(response.data.msg);
-        } else {
-          set({
-            message: response.data.msg,
-            error: "Error",
-          });
-          console.error("Error en la reserva:", response.data.msg);
-          toast.error(response.data.msg);
+          toast.success(data.msg);
         }
-
-        setTimeout(() => {
-          set({ message: null });
-        }, 5000);
       } catch (error) {
-        console.error("Error en la solicitud:", error.response || error);
-        const errorMessage =
-          error.response?.data?.msg || error.message || "Error desconocido";
-        set({
-          error: errorMessage,
-          isLoading: false,
-        });
-        toast.error(errorMessage);
+        const errorMsg =
+          error.response?.data?.msg || "Error al eliminar la reserva";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
+      }
+    },
+
+    updatedReserva: async (values) => {
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
+
+      try {
+        set({ isLoading: true, error: null });
+        const { data } = await axios.put(
+          `${API_BASE_URL}/update_reservation/${values.id_reserva}`,
+          values,
+          { headers: { Authorization: `Bearer ${cleanToken}` } }
+        );
+
+        if (data.updated) {
+          const currentReservations = get().reservations || [];
+          const updatedReservations = currentReservations
+            .filter((r) => r.id_reserva !== values.id_reserva)
+            .concat(data.reservation);
+
+          set({
+            reservations: updatedReservations,
+            message: data.msg,
+            isLoading: false,
+          });
+          toast.success(data.msg);
+        } else {
+          set({ message: data.msg, isLoading: false });
+          toast.error(data.msg);
+        }
+        setTimeout(() => set({ message: null }), TOAST_TIMEOUT);
+      } catch (error) {
+        const errorMsg =
+          error.response?.data?.msg || "Error al actualizar la reserva";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
 
     getAllAdmin: async () => {
-      const token = localStorage.getItem("authToken");
-      const cleanToken = token.replace(/^"(.*)"$/, "$1");
-      // Verifica si el token está presente
-      if (!token) {
-        set({
-          error: "No hay un token de autenticación. Por favor, inicia sesión.",
-          isLoading: false,
-        });
-        toast.error("No hay un token de autenticación.");
-        return;
-      }
+      const cleanToken = getCleanToken();
+      if (!cleanToken) return handleAuthError(set);
 
       try {
         set({ isLoading: true, error: null });
-
-        const response = await axios.get("http://127.0.0.1:5000/getAllAdmin", {
-          headers: {
-            Authorization: `Bearer ${cleanToken}`,
-            "Content-Type": "application/json",
-          },
+        const { data } = await axios.get(`${API_BASE_URL}/getAllAdmin`, {
+          headers: { Authorization: `Bearer ${cleanToken}` },
         });
 
-        if (!response.data.reservations) {
-          set({
-            message: response.data.msg,
-          });
-          toast.error(response.data.msg);
-        } else {
-          const { reservations, users, services } = response.data;
-          set({
-            reservations: reservations,
-            usuarios: users,
-            servicios: services,
-          });
-        }
-
-        setTimeout(() => {
-          set({ message: null });
-        }, 5000);
-      } catch (error) {
-        console.error("Error en la solicitud:", error.response || error);
-        const errorMessage =
-          error.response?.data?.msg || error.message || "Error desconocido";
         set({
-          error: errorMessage,
+          reservations: data.reservations || null,
+          usuarios: data.users || null,
+          servicios: data.services || null,
+          message: data.msg,
           isLoading: false,
         });
-        toast.error(errorMessage);
+
+        if (!data.reservations) toast.error(data.msg);
+        setTimeout(() => set({ message: null }), TOAST_TIMEOUT);
+      } catch (error) {
+        const errorMsg =
+          error.response?.data?.msg || "Error al obtener datos de admin";
+        set({ error: errorMsg, isLoading: false });
+        toast.error(errorMsg);
       }
     },
 
-    reset: () =>
-      set({
-        reservation: false,
-      }),
+    reset: () => set({ reservation: false }),
   }))
 );
 

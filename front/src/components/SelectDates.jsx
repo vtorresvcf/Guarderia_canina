@@ -3,23 +3,48 @@ import useReservationStore from "../store/store";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field } from "formik";
 import { format } from "date-fns";
 import { IoCalendarNumber } from "react-icons/io5";
 import { GiDogHouse } from "react-icons/gi";
+import { GiJumpingDog } from "react-icons/gi";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 1.2 } },
+};
+
+const slideInUp = {
+  hidden: { y: 50, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 1.2 } },
+};
+
+const scaleUp = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: { scale: 1, opacity: 1, transition: { duration: 0.6 } },
+};
+
 const SelectDates = () => {
-  const { dateStart, endDate, places, reset, setReserva, user } =
-    useReservationStore();
+  const {
+    dateStart,
+    endDate,
+    id_services,
+    places,
+    reset,
+    setReserva,
+    token,
+    getServices,
+    Allservices,
+  } = useReservationStore();
   const navigate = useNavigate();
 
   const handleSubmit = (values) => {
-    if (!user) {
-      toast.error("Tienes que estar registrado antes de hacer la reserva");
+    if (!token) {
+      toast.error("Tienes que estar registrado");
       setTimeout(() => {
         navigate("/register");
       }, 3000);
@@ -39,6 +64,9 @@ const SelectDates = () => {
   };
 
   const [openCalendar, setOpenCalendar] = useState(false);
+  useEffect(() => {
+    getServices();
+  }, [getServices]);
 
   return (
     <div className="text-verdeOscuro font-pacifico my-20 flex justify-center">
@@ -50,18 +78,18 @@ const SelectDates = () => {
             marginTop: "150px",
             marginBottom: "50px",
             marginLeft: "380px",
-            fontSize: "16px",
-            maxWidth: "400px",
+            fontSize: "24px",
+            maxWidth: "500px",
+            padding: "10px",
           },
         }}
       />
       <Formik
         initialValues={{
-          // Inicializa las fechas como null si no hay fechas seleccionadas
           dateStart: dateStart || null,
           endDate: endDate || null,
           places: places || 1,
-          id_services: 6,
+          id_services: id_services || null,
         }}
         validate={(values) => {
           const errors = {};
@@ -85,9 +113,38 @@ const SelectDates = () => {
         }}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, errors, touched, values, resetForm }) => (
-          <Form className="flex flex-col justify-center items-center w-full mx-12">
-            <div className="flex items-center border-b border-teal-500 py-2 text-2xl md:text-3xl gap-4 flex-col md:flex-row justify-center">
+        {({
+          setFieldValue,
+          errors,
+          touched,
+          values,
+          resetForm,
+          isSubmitting,
+        }) => (
+          <motion.form
+            variants={fadeIn}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col justify-center items-center w-full mx-12"
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              if (!values.dateStart || !values.endDate) {
+                toast.error("Las fechas son obligatorias.");
+                return;
+              }
+
+              if (!isSubmitting) {
+                handleSubmit(values);
+              }
+            }}
+          >
+            <motion.div
+              variants={slideInUp}
+              initial="hidden"
+              animate="visible"
+              className="flex items-center border-b border-teal-500 py-2 text-2xl md:text-3xl gap-4 flex-col md:flex-row justify-center"
+            >
               <div className="flex items-center justify-center gap-1">
                 <label htmlFor="calendar">
                   <IoCalendarNumber />
@@ -108,13 +165,13 @@ const SelectDates = () => {
                   readOnly
                   value={
                     !values.dateStart || !values.endDate
-                      ? "" // Mostrar vacío si no se seleccionaron fechas
+                      ? ""
                       : values.dateStart.getTime() === values.endDate.getTime()
-                      ? format(values.dateStart, "dd/MMM/yy") // Formatea cuando las fechas son iguales
+                      ? format(values.dateStart, "dd/MMM/yy")
                       : `${format(values.dateStart, "dd/MMM/yy")} - ${format(
                           values.endDate,
                           "dd/MMM/yy"
-                        )}` // Formatea cuando las fechas son diferentes
+                        )}`
                   }
                 />
               </div>
@@ -135,11 +192,34 @@ const SelectDates = () => {
                   placeholder="Nº plazas"
                 />
               </div>
+              <div className="flex items-center justify-center gap-1">
+                <label htmlFor="services">
+                  <GiJumpingDog />
+                </label>
+                <Field
+                  as="select"
+                  name="id_services"
+                  id="services"
+                  className="appearance-none bg-transparent border-none w-[240px]  text-xl text-center text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
+                >
+                  <option value="">Selecciona un servicio</option>
+                  {Allservices?.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} - {service.prices}€
+                    </option>
+                  ))}
+                </Field>
+              </div>
+
               <div>
                 <motion.button
+                  variants={fadeIn}
+                  initial="hidden"
+                  animate="visible"
                   className="flex-shrink-0 bg-green-700 hover:bg-green-800 border-green-700 hover:border-green-900 border-4 text-white py-1 px-2 rounded"
                   type="submit"
                   whileTap={{ scale: 0.85 }}
+                  disabled={isSubmitting}
                 >
                   Reservar
                 </motion.button>
@@ -155,9 +235,14 @@ const SelectDates = () => {
                   Cancelar
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="flex flex-col items-center justify-center gap-4 mt-4 w-full">
+            <motion.div
+              variants={scaleUp}
+              initial="hidden"
+              animate={openCalendar ? "visible" : "hidden"}
+              className="flex flex-col items-center justify-center gap-4 mt-4 w-full"
+            >
               {openCalendar && (
                 <DateRange
                   ranges={[
@@ -179,6 +264,10 @@ const SelectDates = () => {
                   minDate={new Date()}
                   moveRangeOnFirstSelection={false}
                   editableDateInputs={false}
+                  style={{
+                    width: "700px",
+                    fontSize: "18px",
+                  }}
                 />
               )}
 
@@ -191,8 +280,8 @@ const SelectDates = () => {
               {touched.places && errors.places && (
                 <div style={{ color: "red" }}>{errors.places}</div>
               )}
-            </div>
-          </Form>
+            </motion.div>
+          </motion.form>
         )}
       </Formik>
     </div>

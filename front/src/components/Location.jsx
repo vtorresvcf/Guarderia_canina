@@ -7,13 +7,13 @@ const Location = () => {
       <div className="grid grid-cols-1 md:grid-cols-2">
         <motion.div
           className="flex flex-col items-center m-auto"
-          initial={{ opacity: 0, x: -200 }} // Empieza desde la izquierda con opacidad 0
-          whileInView={{ opacity: 1, x: 0 }} // Deslízate a su posición original
+          initial={{ opacity: 0, x: -200 }}
+          whileInView={{ opacity: 1, x: 0 }}
           transition={{
             duration: 1,
             ease: "easeOut",
           }}
-          viewport={{ once: true }} // Solo cuando entra en vista
+          viewport={{ once: true }}
         >
           <h1 className="font-serif py-5 text-4xl lg:text-6xl">
             Donde estamos
@@ -26,13 +26,13 @@ const Location = () => {
 
         <motion.div
           className="py-5"
-          initial={{ opacity: 0, x: 200 }} // Empieza desde la derecha con opacidad 0
-          whileInView={{ opacity: 1, x: 0 }} // Deslízate a su posición original
+          initial={{ opacity: 0, x: 200 }}
+          whileInView={{ opacity: 1, x: 0 }}
           transition={{
             duration: 1,
             ease: "easeOut",
           }}
-          viewport={{ once: true }} // Solo cuando entra en vista
+          viewport={{ once: true }}
         >
           <Map />
         </motion.div>
