@@ -30,6 +30,7 @@ const useReservationStore = create(
     servicios: null,
     isLoading: false,
     error: null,
+    Allservices: [],
 
     logout: () => {
       setTimeout(() => {
@@ -72,6 +73,15 @@ const useReservationStore = create(
         const errorMsg = error.response?.data?.msg || "Error al registrar";
         set({ error: errorMsg, isLoading: false });
         toast.error(errorMsg);
+      }
+    },
+    getServices: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/services`);
+        set({ Allservices: response.data.services });
+      } catch (error) {
+        const errorMsg = console.error("Error al obtener los servicios", error);
+        set({ error: errorMsg, isLoading: false });
       }
     },
 

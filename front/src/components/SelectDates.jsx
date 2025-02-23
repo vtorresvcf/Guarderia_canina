@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useReservationStore from "../store/store";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -7,6 +7,7 @@ import { Formik, Field } from "formik";
 import { format } from "date-fns";
 import { IoCalendarNumber } from "react-icons/io5";
 import { GiDogHouse } from "react-icons/gi";
+import { GiJumpingDog } from "react-icons/gi";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -28,8 +29,17 @@ const scaleUp = {
 };
 
 const SelectDates = () => {
-  const { dateStart, endDate, places, reset, setReserva, token } =
-    useReservationStore();
+  const {
+    dateStart,
+    endDate,
+    id_services,
+    places,
+    reset,
+    setReserva,
+    token,
+    getServices,
+    Allservices,
+  } = useReservationStore();
   const navigate = useNavigate();
 
   const handleSubmit = (values) => {
@@ -54,6 +64,9 @@ const SelectDates = () => {
   };
 
   const [openCalendar, setOpenCalendar] = useState(false);
+  useEffect(() => {
+    getServices();
+  }, [getServices]);
 
   return (
     <div className="text-verdeOscuro font-pacifico my-20 flex justify-center">
@@ -76,7 +89,7 @@ const SelectDates = () => {
           dateStart: dateStart || null,
           endDate: endDate || null,
           places: places || 1,
-          id_services: 6,
+          id_services: id_services || null,
         }}
         validate={(values) => {
           const errors = {};
@@ -115,6 +128,12 @@ const SelectDates = () => {
             className="flex flex-col justify-center items-center w-full mx-12"
             onSubmit={(e) => {
               e.preventDefault();
+
+              if (!values.dateStart || !values.endDate) {
+                toast.error("Las fechas son obligatorias.");
+                return;
+              }
+
               if (!isSubmitting) {
                 handleSubmit(values);
               }
@@ -173,6 +192,25 @@ const SelectDates = () => {
                   placeholder="Nº plazas"
                 />
               </div>
+              <div className="flex items-center justify-center gap-1">
+                <label htmlFor="services">
+                  <GiJumpingDog />
+                </label>
+                <Field
+                  as="select"
+                  name="id_services"
+                  id="services"
+                  className="appearance-none bg-transparent border-none w-[240px]  text-xl text-center text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
+                >
+                  <option value="">Selecciona un servicio</option>
+                  {Allservices?.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} - {service.prices}€
+                    </option>
+                  ))}
+                </Field>
+              </div>
+
               <div>
                 <motion.button
                   variants={fadeIn}
