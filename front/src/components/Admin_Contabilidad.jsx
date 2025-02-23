@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import useReservationStore from "../store/store";
 
 const Admin_Contabilidad = () => {
@@ -30,7 +29,6 @@ const Admin_Contabilidad = () => {
   const groupByMonthAndYear = (data) => {
     const monthlyTotals = {};
 
-    // Inicializar todos los meses de los tres años con 0
     for (let year = 2023; year <= 2025; year++) {
       monthlyTotals[year] = {};
       for (let i = 0; i < 12; i++) {
@@ -38,17 +36,16 @@ const Admin_Contabilidad = () => {
       }
     }
 
-    // Sumar los precios por mes y año
     data.forEach((item) => {
       const createdAt = new Date(
         item.created_at.split(" ")[0].split("-").reverse().join("-")
       );
-      const createdMonth = createdAt.getMonth(); // Mes (0-11)
-      const createdYear = createdAt.getFullYear(); // Año
+      const createdMonth = createdAt.getMonth();
+      const createdYear = createdAt.getFullYear();
 
       if (createdYear >= 2023 && createdYear <= 2025) {
-        const month = createdMonth; // Usamos directamente el mes de 0-11
-        monthlyTotals[createdYear][month] += item.totalPrice; // Sumar el totalPrice
+        const month = createdMonth;
+        monthlyTotals[createdYear][month] += item.totalPrice;
       }
     });
 

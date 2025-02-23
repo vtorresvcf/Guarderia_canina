@@ -37,7 +37,7 @@ const FormAddService = ({ setAddService }) => {
               .test(
                 "is-decimal",
                 "El precio debe ser un número decimal válido",
-                (value) => /^\d+(\.\d{1,2})?$/.test(value) // Verifica que tenga hasta 2 decimales
+                (value) => /^\d+(\.\d{1,2})?$/.test(value)
               ),
           })}
           onSubmit={handleSubmit}

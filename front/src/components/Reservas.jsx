@@ -19,7 +19,7 @@ const Reservas = ({ reserva }) => {
     id_services,
   } = reserva;
 
-  const { deleteReserva, updatedReserva } = useReservationStore(); // Asegúrate de que `updateReserva` exista en el store
+  const { deleteReserva, updatedReserva } = useReservationStore();
   const [isEditing, setIsEditing] = useState(false);
 
   const formatToISODate = (date) => {
@@ -39,18 +39,26 @@ const Reservas = ({ reserva }) => {
       dateStart: formattedDateStart,
       endDate: formattedEndDate,
     };
-    updatedReserva(formattedValues); // Actualiza la reserva en el store
-    setIsEditing(false); // Sal del modo de edición
+    updatedReserva(formattedValues);
+    setIsEditing(false);
   };
 
   return (
     <article className="w-[70%] font-serif mx-auto my-5">
-      <h2 className="font-bold text-xl pb-4 text-green-700 ">
+      <motion.h2
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="font-bold text-xl pb-4 text-green-700"
+      >
         Reserva: {dateStart} {dateStart !== endDate && `--- ${endDate}`}
-      </h2>
-      <li
+      </motion.h2>
+      <motion.li
         key={id_reserva}
         className="border-spacing-3 py-10 rounded-md shadow-lg bg-white flex"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
       >
         {!isEditing && (
           <div className="w-1/5 flex justify-center items-center ml-10">
@@ -171,27 +179,52 @@ const Reservas = ({ reserva }) => {
             </Formik>
           ) : (
             <>
-              <p className="font-bold">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="font-bold"
+              >
                 Servicio:{" "}
                 <span className="font-normal">{serviceDescription}</span>
-              </p>
-              <p className="font-bold">
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="font-bold"
+              >
                 Plazas: <span className="font-normal">{places}</span>
-              </p>
-              <p className="font-bold">
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="font-bold"
+              >
                 Fecha reserva: <span className="font-normal">{created_at}</span>
-              </p>
-              <p className="font-bold">
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="font-bold"
+              >
                 Total:{" "}
                 <span className="underline decoration-double decoration-green-700">
                   {totalPrice} €
                 </span>
-              </p>
+              </motion.p>
             </>
           )}
         </div>
-        <div className="w-1/5 flex">
-          <div className="text-2xl flex flex-col mx-auto gap-4 ">
+        <motion.div
+          className="w-1/5 flex"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="text-2xl flex flex-col mx-auto gap-4">
             {!isEditing && (
               <>
                 <FaEdit onClick={() => setIsEditing(true)} />
@@ -199,8 +232,8 @@ const Reservas = ({ reserva }) => {
               </>
             )}
           </div>
-        </div>
-      </li>
+        </motion.div>
+      </motion.li>
     </article>
   );
 };

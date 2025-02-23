@@ -164,7 +164,7 @@ const Admin_Central = ({ text }) => {
       </div>
 
       <Toaster
-        position="top-center"
+        position="top-right"
         richColors
         toastOptions={{
           style: {

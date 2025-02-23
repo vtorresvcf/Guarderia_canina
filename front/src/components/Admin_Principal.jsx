@@ -2,16 +2,21 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect } from "react";
 
 const Admin_Principal = ({ data, text }) => {
-  const totalItems = data?.length;
+  const totalItems = data?.length || 0;
 
   const count = useMotionValue(0);
   const rounded = useTransform(count, Math.round);
 
   useEffect(() => {
-    const animation = animate(count, totalItems, {
-      duration: 2,
-    });
-  }, []);
+    if (totalItems > 0) {
+      const animation = animate(count, totalItems, {
+        duration: 2,
+      });
+
+      return () => animation.stop();
+    }
+  }, [totalItems, count]);
+
   return (
     <div>
       <div className="bg-white shadow-lg w-64 h-2/3 p-4 flex flex-col justify-around text-center font-thin">

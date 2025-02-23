@@ -7,9 +7,9 @@ const Admin_Reservas = () => {
   const itemsPerPage = 20;
 
   const [filters, setFilters] = useState({
-    textSearch: "", // Búsqueda por texto
-    serviceFilter: "", // Filtro por servicio
-    currentPage: 1, // Página actual
+    textSearch: "",
+    serviceFilter: "",
+    currentPage: 1,
   });
 
   const [filteredData, setFilteredData] = useState({
@@ -19,16 +19,13 @@ const Admin_Reservas = () => {
     totalItems: 0,
   });
 
-  // Extraer servicios únicos
   const ServicesName = [
     ...new Set(reservations?.map((reserva) => reserva.serviceName)),
   ];
 
-  // Actualizar el estado del filtrado cuando cambien los filtros o la página
   useEffect(() => {
     const searchText = filters.textSearch.toLowerCase();
 
-    // Filtrar las reservas
     const filteredReservations =
       reservations?.filter((reserva) => {
         const { userName = "", serviceName = "" } = reserva;
@@ -42,7 +39,6 @@ const Admin_Reservas = () => {
         return matchesText && matchesService;
       }) || [];
 
-    // Paginación
     const totalItems = filteredReservations.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const startIndex = (filters.currentPage - 1) * itemsPerPage;
@@ -51,7 +47,6 @@ const Admin_Reservas = () => {
       startIndex + itemsPerPage
     );
 
-    // Actualizar el estado
     setFilteredData({
       filteredReservations,
       paginatedReservations,
@@ -60,12 +55,11 @@ const Admin_Reservas = () => {
     });
   }, [filters, reservations]);
 
-  // Manejar cambios en los filtros
   const handleFiltersChange = (key, value) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
-      currentPage: key === "currentPage" ? value : 1, // Reiniciar página si se cambia el texto o servicio
+      currentPage: key === "currentPage" ? value : 1,
     }));
   };
 
@@ -85,7 +79,6 @@ const Admin_Reservas = () => {
     <div className="mx-10 flex justify-center flex-col">
       <h1 className="text-center text-3xl py-12">Listado de reservas</h1>
       <div className="flex justify-center gap-10">
-        {/* Filtro por texto */}
         <input
           type="text"
           placeholder="Filtrar por nombre"
@@ -94,7 +87,6 @@ const Admin_Reservas = () => {
           className="mb-4 px-4 py-2 border border-gray-300 rounded-xl shadow-md w-1/3"
         />
 
-        {/* Filtro por servicio */}
         <select
           value={filters.serviceFilter}
           onChange={(e) => handleFiltersChange("serviceFilter", e.target.value)}
@@ -113,7 +105,6 @@ const Admin_Reservas = () => {
         </select>
       </div>
 
-      {/* Tabla de resultados */}
       {filteredData.paginatedReservations.length > 0 ? (
         <>
           <div className=" min-h-96 mt-10">

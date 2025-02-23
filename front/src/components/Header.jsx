@@ -19,7 +19,7 @@ const menuVariants = {
 const Header = () => {
   const { logout, user } = useReservationStore();
   const [showText, setShowText] = useState(true);
-  const [openDropdown, setOpenDropdown] = useState(false); // Estado para el menú
+  const [openDropdown, setOpenDropdown] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowText(false), 3000);
@@ -128,7 +128,6 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Botón menú hamburguesa */}
           <div className="relative items-center sm:hidden mx-auto">
             <motion.button
               type="button"
@@ -156,7 +155,6 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Dropdown menú con animación */}
         <AnimatePresence>
           {openDropdown && (
             <motion.ul
@@ -215,7 +213,7 @@ const Header = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 50 }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
-              className="text-white bg-gray-200/50 backdrop-blur-md px-6 py-4 rounded-lg inline-block"
+              className="text-white bg-gray-200/5 backdrop-blur-md px-6 py-4 rounded-lg inline-block"
             >
               Tu aventura comienza aquí !!!
             </motion.h2>
