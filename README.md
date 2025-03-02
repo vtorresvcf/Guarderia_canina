@@ -1,5 +1,8 @@
 # GuatoCa - Aplicación Full Stack para Guardería Canina  
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5ff04a1e-737a-4ced-b310-1fc838486ea0" alt="Demostración App de GuatoCa">
+</p>
 
 [GuarderiaCanina.webm](https://github.com/user-attachments/assets/5ff04a1e-737a-4ced-b310-1fc838486ea0)
 
