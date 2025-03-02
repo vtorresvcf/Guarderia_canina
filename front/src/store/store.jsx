@@ -31,6 +31,7 @@ const useReservationStore = create(
     isLoading: false,
     error: null,
     Allservices: [],
+    register: false,
 
     logout: () => {
       setTimeout(() => {

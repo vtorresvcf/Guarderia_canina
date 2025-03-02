@@ -11,7 +11,8 @@ const FormLogin = () => {
 
   useEffect(() => {
     emailInputRef.current?.focus();
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollBy(0, 200);
   }, []);
 
   const handleSubmit = async (values, { resetForm }) => {
