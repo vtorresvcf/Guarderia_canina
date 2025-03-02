@@ -85,7 +85,6 @@ def Login():
 
 
 @bp.route('/users', methods=['GET'])
-##TODO  PENDIENTE VALIDAR CON JWT QUE SEA SOLO EL ADMIN
 def getAllUsers():
     users = User.query.all()
     users=[user.serialize() for user in users]
@@ -153,21 +152,20 @@ def deleteService():
 
 
 @bp.route('/services', methods=['GET'])
-##TODO  PENDIENTE VALIDAR CON JWT QUE SEA SOLO EL ADMIN
 def getAllServices():
     services = Services.query.all()
     services=[service.serialize() for service in services]
     if services:
         return jsonify({'services': services}),200
-    return jsonify({'msg':'Ningún usuario encontrado'}),404
+    return jsonify({'msg':'Ningún usuario ha sido encontrado'}),404
 
 @bp.route('/add_reservation', methods=['POST'])
 @jwt_required()
 def AddReservation():
-    # Recupera el ID del usuario desde el token
+    
     id_user = get_jwt_identity()
 
-    # Asegúrate de convertir a entero si es necesario
+    
     try:
         id_user = int(id_user)
     except ValueError:
@@ -194,17 +192,17 @@ def AddReservation():
     except ValueError:
         return jsonify({'msg': 'El número de plazas debe ser un entero.', "reservation": False}), 400
 
-    # Consulta al usuario por su ID
+
     user = User.query.get(id_user)
     if not user:
         return jsonify({'msg': 'Usuario no encontrado.', "reservation": False}), 404
 
-    # Consulta el servicio
+    
     service = Services.query.get(id_services)
     if not service:
         return jsonify({'msg': f'Servicio con ID {id_services} no encontrado.', "reservation": False}), 404
 
-    # Verifica la capacidad restante
+
     total_reserved = Reservation.query.filter(
         Reservation.id_services == service.id,
         Reservation.dateStart == dateStart,
@@ -215,43 +213,43 @@ def AddReservation():
     if places > remaining_capacity:
         return jsonify({'msg': f'No hay suficientes plazas disponibles. Plazas restantes: {remaining_capacity}', "reservation": False}), 400
 
-    # Verifica si ya existe una reserva para este usuario y servicio en ese rango de fechas
+
     existing_reservation = Reservation.query.filter_by(
         id_user=id_user, id_services=service.id, dateStart=dateStart, endDate=endDate
     ).first()
     if existing_reservation:
-        # Formatear las fechas al formato deseado
+     
         formatted_start_date = datetime.strftime(dateStart, "%d-%m-%Y")
         formatted_end_date = datetime.strftime(endDate, "%d-%m-%Y")
 
-        # Construir el mensaje dependiendo si las fechas son iguales o no
+        
         if dateStart == endDate:
             msg = f"Ya tienes una reserva para el día {formatted_start_date}."
         else:
             msg = f"Ya tienes una reserva para los días {formatted_start_date} - {formatted_end_date}."
         return jsonify({"msg": msg, "reservation": False}), 400
 
-    # Cálculo del precio total (asumiendo que el servicio tiene un campo `price` por día)
+   
     delta_days = (endDate - dateStart).days
 
-    # Si las fechas son iguales, entonces delta_days debe ser al menos 1
+   
     if delta_days == 0:
         delta_days = 1
 
     if delta_days < 0:
         return jsonify({"msg": "La fecha de finalización no puede ser antes de la fecha de inicio.", "reservation": False}), 400
 
-    # Precio total = precio por día * cantidad de días * cantidad de plazas
+    
     totalPrice = service.prices * delta_days * places
 
-    # Crea una nueva reserva
+   
     new_reservation = Reservation(
         id_user=id_user, id_services=service.id, places=places, dateStart=dateStart, endDate=endDate, totalPrice=totalPrice
     )
     db.session.add(new_reservation)
     db.session.commit()
 
-    # Actualiza la capacidad del servicio
+   
     service.capacity -= places
     db.session.commit()
 
@@ -263,22 +261,22 @@ def AddReservation():
 @jwt_required()
 def getUserReservations():
 
-    # Recupera el ID del usuario desde el token
+   
     id_user = get_jwt_identity()
 
     reservas = Reservation.query.filter_by(id_user=id_user).all()
     if reservas:
-        # Serializar las reservas y añadir price y description del servicio asociado
+      
         reservations = []
         for reserva in reservas:
-            reservation_data = reserva.serialize()  # serializa la reserva
+            reservation_data = reserva.serialize()  
             
-            # Añadir el precio y la descripción del servicio asociado a la reserva
-            service = reserva.service  # Accede al servicio relacionado
+         
+            service = reserva.service  
            
             if service:
-                # Añadir el precio y la descripción del servicio
-                reservation_data['serviceDescription'] = service.description  # Añadir descripción
+                
+                reservation_data['serviceDescription'] = service.description 
             else:
                 reservation_data['serviceDescription'] = None
 
@@ -295,11 +293,10 @@ def getAllReservations():
     identidad = get_jwt_identity()
     usuario = User.query.filter_by(id=identidad).first()
 
-    # Verifica si el usuario es administrador
+
     if not usuario or not usuario.is_admin:
         return jsonify({"error": "Acceso no autorizado. Solo administradores pueden ver las reservas."}), 403
 
-    # Si el usuario es administrador, obtiene todas las reservas
     reservas = Reservation.query.all()
     users = User.query.all()
     services = Services.query.all()
@@ -326,17 +323,17 @@ def deleteReservation(id_reserva):
         return jsonify({'msg': 'No estás autorizado para eliminar esta reserva.'}), 403
 
     try:
-        # Recuperar datos relacionados con la reserva
+        
         service_id = reservation_to_delete.id_services
         places = reservation_to_delete.places
 
-        # Eliminar la reserva
+    
         db.session.delete(reservation_to_delete)
 
-        # Actualizar la capacidad del servicio
+        
         service_update = Services.query.get(service_id)
         if service_update:
-            # Recálculo de la capacidad
+           
             total_reserved = Reservation.query.filter(
                 Reservation.id_services == service_id,
                 Reservation.dateStart == reservation_to_delete.dateStart,
@@ -346,9 +343,9 @@ def deleteReservation(id_reserva):
             total_capacity = service_update.capacity
             remaining_capacity = total_capacity - total_reserved + places
 
-            service_update.capacity = remaining_capacity  # Actualizamos la capacidad
+            service_update.capacity = remaining_capacity  
 
-        # Confirmar los cambios en la base de datos
+  
         db.session.commit()
         return jsonify({'msg': 'Reserva eliminada correctamente.', 'success': True}), 200
 
@@ -399,13 +396,13 @@ def updateReservation(id_reserva):
     if not reservation_to_update:
         return jsonify({'msg': 'Reserva no encontrada.'}), 404
 
-    # Recuperar la reserva original para obtener los datos necesarios
+    
     original_service_id = reservation_to_update.id_services
     original_places = reservation_to_update.places
     original_dateStart = reservation_to_update.dateStart
     original_endDate = reservation_to_update.endDate
 
-    # Recálculo de la capacidad del servicio original
+ 
     original_service = Services.query.get(original_service_id)
     total_reserved_original = Reservation.query.filter(
         Reservation.id_services == original_service_id,
@@ -416,7 +413,7 @@ def updateReservation(id_reserva):
     total_capacity_original = original_service.capacity
     remaining_capacity_original = total_capacity_original - total_reserved_original + original_places
 
-    # Si la reserva está cambiando de servicio, comprobar la nueva capacidad
+  
     if new_id_service != original_service_id:
         total_reserved_new = Reservation.query.filter(
             Reservation.id_services == new_id_service,
@@ -427,22 +424,21 @@ def updateReservation(id_reserva):
         total_capacity_new = service.capacity
         remaining_capacity_new = total_capacity_new - total_reserved_new
 
-        # Verificar si hay suficiente capacidad en el nuevo servicio
+     
         if new_places > remaining_capacity_new:
             return jsonify({'msg': f'No hay suficientes plazas disponibles para el servicio ID {new_id_service}. Plazas restantes: {remaining_capacity_new}'}), 400
 
-    # Actualizar la reserva existente
+ 
     reservation_to_update.id_user = id_user
     reservation_to_update.id_services = new_id_service
     reservation_to_update.places = new_places
     reservation_to_update.dateStart= new_dateStart
     reservation_to_update.endDate= new_endDate
 
-    # Actualizar la capacidad de los servicios
-    original_service.capacity = remaining_capacity_original  # Ajustamos la capacidad original
-    service.capacity -= new_places  # Restamos las plazas del nuevo servicio
+    original_service.capacity = remaining_capacity_original  
+    service.capacity -= new_places  
 
-    # Guardar los cambios en la base de datos
+  
     db.session.commit()
 
     return jsonify({'msg': 'Reserva actualizada correctamente.', 'updated': True, 'reservation': reservation_to_update.serialize()}), 200
