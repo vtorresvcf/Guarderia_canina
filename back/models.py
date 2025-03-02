@@ -68,7 +68,7 @@ class Reservation(db.Model):
         return f'<Reservation {self.dateStart}>'
 
     def serialize(self):
-        formatted_created_at = self.created_at.strftime("%d-%m-%Y %H:%M")  # Cambiar formato según necesidad
+        formatted_created_at = self.created_at.strftime("%d-%m-%Y %H:%M")  
         return {
             "id_reserva": self.id,
             "id_user": self.id_user,
