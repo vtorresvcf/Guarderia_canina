@@ -1,9 +1,7 @@
 # GuatoCa - Aplicación Full Stack para Guardería Canina  
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/94036227-d684-4d37-a67f-97ae8821310f" alt="Demostración App de GuatoCa">
-</p>
 
+[GuarderiaCanina.webm](https://github.com/user-attachments/assets/5ff04a1e-737a-4ced-b310-1fc838486ea0)
 
 GuatoCa es una plataforma completa para gestionar reservas en una guardería canina, ofreciendo una experiencia fluida tanto para usuarios como para administradores. Permite a los dueños de perros reservar servicios fácilmente y a los administradores gestionar reservas, usuarios y servicios desde un dashboard intuitivo.  
 
