@@ -1,81 +1,76 @@
 # GuatoCa - Aplicación Full Stack para Guardería Canina  
 
-Una app para gestionar reservas de guardería canina, con un dashboard para administradores y una experiencia fluida para usuarios.  
-
-GuatoCa es un proyecto full stack que permite a los usuarios registrarse, iniciar sesión y reservar servicios diarios para sus perros en una guardería canina. Los administradores tienen un panel dedicado con gráficos y tablas para monitorear reservas, servicios y usuarios registrados. Todo está respaldado por una base de datos **PostgreSQL** y potenciado por un stack moderno de tecnologías frontend y backend.  
+GuatoCa es una plataforma completa para gestionar reservas en una guardería canina, ofreciendo una experiencia fluida tanto para usuarios como para administradores. Permite a los dueños de perros reservar servicios fácilmente y a los administradores gestionar reservas, usuarios y servicios desde un dashboard intuitivo.  
 
 ## 🚀 Características principales  
 
-### **Sin iniciar sesión, puedes:**  
-- Ver la web.  
-- Contactar.  
-- Consultar la ubicación del lugar mediante un mapa.  
+### **Para visitantes (sin iniciar sesión):**  
+- Explorar la web.  
+- Contactar con la guardería.  
+- Ver la ubicación en **Google Maps**.  
 
-### **Con sesión iniciada, puedes:**  
-- Reservar.  
-- Modificar y borrar tus reservas.  
-- Ver y filtrar reservas.  
+### **Para usuarios registrados:**  
+- Reservar servicios diarios.  
+- Modificar o cancelar reservas.  
+- Consultar y filtrar sus reservas.  
 
-### **Como administrador, tienes acceso a:**  
-#### **Inicio**  
-- Resumen de la situación actual con:  
+### **Para administradores:**  
+#### **Dashboard**  
+- Resumen general con:  
   - Total de reservas activas.  
   - Total de servicios disponibles.  
   - Total de usuarios registrados.  
-  - Gráfico con la distribución de plazas reservadas.  
+  - Gráfico de distribución de plazas reservadas.  
 
-#### **Servicios**  
+#### **Gestión de servicios**  
 - Listado de servicios disponibles.  
-- Gráfico con el total de plazas ocupadas por servicio.  
-- Opción para agregar y eliminar servicios.  
+- Gráfico de plazas ocupadas por servicio.  
+- Agregar o eliminar servicios.  
 
-#### **Reservas**  
-- Listado de todas las reservas con opción de filtrado.  
+#### **Gestión de reservas**  
+- Ver y filtrar todas las reservas.  
 
 #### **Contabilidad**  
 - Visualización de ganancias por mes y por servicio.  
 
-#### **Usuarios**  
+#### **Gestión de usuarios**  
 - Listado de usuarios registrados.  
-- Gráfico con el total de reservas realizadas por cada usuario.  
+- Gráfico con el total de reservas por usuario.  
 
 ## 🛠️ Tecnologías utilizadas  
 
 ### **Frontend**  
-- **React:** Construcción de la interfaz de usuario dinámica.  
-- **Tailwind CSS:** Estilos modernos y responsivos.  
-- **Sonner:** Notificaciones toast elegantes.  
-- **Framer Motion:** Animaciones fluidas para una mejor UX.  
-- **Formik:** Manejo sencillo de formularios.  
-- **Zustand:** Gestión eficiente del estado global.  
-- **Recharts:** Gráficos interactivos para el dashboard.  
-- **Date Range:** Selector de fechas para reservas.  
-- **EmailJS:** Envío de correos automáticos.  
+- **React + Tailwind CSS** → Interfaz moderna y responsiva.  
+- **Zustand** → Gestión eficiente del estado global.  
+- **Formik** → Manejo de formularios intuitivo.  
+- **Framer Motion** → Animaciones fluidas.  
+- **Sonner** → Notificaciones elegantes.  
+- **Recharts** → Visualización de datos en gráficos.  
+- **EmailJS** → Envío automático de correos.  
 
 ### **Backend**  
-- **Python + Flask:** API RESTful robusta y ligera.  
-- **JWT:** Autenticación basada en tokens.  
-- **Bcrypt:** Hashing seguro de contraseñas.  
-- **PostgreSQL:** Base de datos relacional para almacenar usuarios, reservas y servicios.  
+- **Python + Flask** → API RESTful ligera y robusta.  
+- **PostgreSQL** → Base de datos relacional escalable.  
+- **JWT + Bcrypt** → Seguridad en autenticación y almacenamiento de contraseñas.  
 
 ### **Integraciones**  
-- **Google Maps API:** Muestra la ubicación exacta de la guardería.  
+- **Google Maps API** → Ubicación interactiva de la guardería.  
 
 ## 📌 Uso  
 
 ### **Usuarios**  
 1. Regístrate con tu email y contraseña.  
-2. Inicia sesión y reserva un día para tu perro usando el calendario.  
-3. Recibe una confirmación por correo.  
+2. Inicia sesión y reserva un día para tu perro.  
+3. Opción de borrar y editar las reservas.  
 
 ### **Administradores**  
-1. Usa credenciales de admin (definidas en la DB) para acceder al dashboard.  
-2. Explora gráficos y tablas para gestionar la guardería.  
+1. Accede al dashboard con credenciales de administrador.  
+2. Gestiona reservas, servicios y usuarios desde la interfaz.  
 
 ## ⚡ Desafíos y soluciones  
-- **Sincronización de reservas:** Usé **Zustand** para mantener el estado actualizado entre el frontend y backend.  
-- **Seguridad:** Implementé **JWT** y **Bcrypt** para proteger las cuentas.  
-- **Visualización de datos:** **Recharts** permitió mostrar tendencias de reservas de forma clara y dinámica.  
+- **Sincronización de reservas:** **Zustand** mantiene el estado actualizado en tiempo real.  
+- **Seguridad:** Implementación de **JWT** y **Bcrypt** para proteger cuentas.  
+- **Visualización de datos:** **Recharts** permite un monitoreo claro de reservas y ganancias.  
 
 ## 👨‍💻 Autor  
 **Vicente Torres**
