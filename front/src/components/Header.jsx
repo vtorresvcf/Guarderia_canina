@@ -1,7 +1,7 @@
 import Logo from "./Logo";
 import "../index.css";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import useReservationStore from "../store/store";
 
@@ -20,15 +20,23 @@ const Header = () => {
   const { logout, user } = useReservationStore();
   const [showText, setShowText] = useState(true);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const location = useLocation(); // Obtiene la ubicación actual
 
   useEffect(() => {
     const timer = setTimeout(() => setShowText(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 
+  // Verifica si estamos en la página de inicio
+  const isHomePage = location.pathname === "/";
+
   return (
-    <header className="fondo flex flex-col">
-      <nav className="flex items-center py-6 justify-between text-white mx-auto w-full h-2/5">
+    <header
+      className={`fondo flex flex-col ${
+        isHomePage ? "h-[30rem]" : "h-[20rem]"
+      }`}
+    >
+      <nav className="flex items-center justify-between text-white mx-auto w-full h-2/5">
         <div className="container mx-auto flex px-2">
           <div>
             <Logo color="white" />

@@ -150,12 +150,12 @@ const SelectDates = () => {
                   <IoCalendarNumber />
                 </label>
                 <Field
-                  className={`text-3xl ${
+                  className={`text-lg ${
                     !values.dateStart || !values.endDate
-                      ? "text-gray-700 w-[140px]"
+                      ? "text-gray-700 w-[150px]"
                       : values.dateStart.getTime() === values.endDate.getTime()
-                      ? "text-verdeOscuro text-xl w-[140px]"
-                      : "text-verdeOscuro text-xl w-[230px]"
+                      ? "text-verdeOscuro text-lg w-[150px]"
+                      : "text-verdeOscuro text-lg w-[230px]"
                   } appearance-none bg-transparent justify-center border-none md:mr-3 py-1 px-2 leading-tight focus:outline-none`}
                   type="text"
                   id="calendar"
@@ -184,7 +184,7 @@ const SelectDates = () => {
                   type="number"
                   id="places"
                   name="places"
-                  className="appearance-none bg-transparent border-none w-[140px] text-center text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  className="appearance-none bg-transparent border-none w-[50px] text-center text-verdeOscuro-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
                   min="1"
                   max="10"
                   inputMode="numeric"
@@ -200,7 +200,7 @@ const SelectDates = () => {
                   as="select"
                   name="id_services"
                   id="services"
-                  className="appearance-none bg-transparent border-none w-[240px]  text-xl text-center text-gray-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
+                  className="appearance-none bg-transparent border-none w-[270px]  text-lg text-center text-verdeOscuro-700 md:mr-3 py-1 px-2 leading-tight focus:outline-none"
                 >
                   <option value="">Selecciona un servicio</option>
                   {Allservices?.map((service) => (
