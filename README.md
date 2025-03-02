@@ -6,17 +6,38 @@ GuatoCa es un proyecto full stack que permite a los usuarios registrarse, inicia
 
 ## 🚀 Características principales  
 
-### **Para usuarios**  
-- **Registro e inicio de sesión:** Autenticación segura para acceder a la plataforma.  
-- **Reservas por día:** Selecciona fechas para reservar servicios usando un calendario interactivo.  
-- **Ubicación integrada:** Visualiza la guardería en **Google Maps**.  
-- **Notificaciones:** Alertas toast con **Sonner** y correos automáticos vía **EmailJS**.  
+### **Sin iniciar sesión, puedes:**  
+- Ver la web.  
+- Contactar.  
+- Consultar la ubicación del lugar mediante un mapa.  
 
-### **Para administradores**  
-- **Dashboard completo:** Vista global de reservas, servicios y usuarios.  
-- **Gráficos dinámicos:** Visualización de datos con **Recharts** (ej. reservas por día).  
-- **Tablas detalladas:** Listados filtrables de usuarios y servicios.  
-- **Gestión en tiempo real:** Actualizaciones inmediatas del estado de las reservas.  
+### **Con sesión iniciada, puedes:**  
+- Reservar.  
+- Modificar y borrar tus reservas.  
+- Ver y filtrar reservas.  
+
+### **Como administrador, tienes acceso a:**  
+#### **Inicio**  
+- Resumen de la situación actual con:  
+  - Total de reservas activas.  
+  - Total de servicios disponibles.  
+  - Total de usuarios registrados.  
+  - Gráfico con la distribución de plazas reservadas.  
+
+#### **Servicios**  
+- Listado de servicios disponibles.  
+- Gráfico con el total de plazas ocupadas por servicio.  
+- Opción para agregar y eliminar servicios.  
+
+#### **Reservas**  
+- Listado de todas las reservas con opción de filtrado.  
+
+#### **Contabilidad**  
+- Visualización de ganancias por mes y por servicio.  
+
+#### **Usuarios**  
+- Listado de usuarios registrados.  
+- Gráfico con el total de reservas realizadas por cada usuario.  
 
 ## 🛠️ Tecnologías utilizadas  
 
